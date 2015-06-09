@@ -1,0 +1,14 @@
+[Unit]
+Description=oVirt VM Console SSH server daemon
+After=syslog.target network.target auditd.service
+
+[Service]
+EnvironmentFile=-@sysconfdir_POST@/sysconfig/ovirt-vmconsole-host-sshd
+User=@VMCONSOLE_USER@
+Group=@VMCONSOLE_GROUP@
+ExecStart=@sbindir_POST@/ovirt-vmconsole-host-sshd -f @pkghostdatadir_POST@/ovirt-vmconsole-host-sshd/sshd_config -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

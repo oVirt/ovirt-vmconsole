@@ -1,0 +1,80 @@
+#
+# ovirt-vmconsole-proxy configuration.
+#
+[proxy]
+
+#
+# Enable debug logging
+#
+debug = false
+
+#
+# Command to run to fetch valid keys.
+# See README.API
+#
+key_list = exec /bin/false "{version}" "{keyfp}" "{keytype}" "{key}"
+
+#
+# Command to run to fetch valid consoles
+# for entity id.
+# See README.API
+#
+console_list = exec /bin/false "{version}" "{entityid}"
+
+#
+# Optional console selection menu title.
+#
+console_menu_title =
+
+#
+# Programs.
+#
+shell = /bin/sh
+ssh = @SSH@
+
+#
+# ovirt-vmconsole-host information.
+#
+ovirt_vmconsole_host_user = @VMCONSOLE_USER@
+ovirt_vmconsole_host_principal = @OVIRT_VMCONSOLE_HOST_PRINCIPAL@
+
+#
+# Console attach command
+# Executed when interaction with
+# ovirt-vmconsole-host is required.
+#
+# Substitutions:
+# {known_hosts_file}
+# 	known_host file name to use.
+# {host}
+# 	destination host name.
+# {entityid}
+# 	original entity id, used for auditing.
+# {entity}
+# 	original entity name, used for auditing.
+# {console}
+# 	console name.
+#
+console_attach_ssh_args =
+console_attach_extra_args =
+console_attach_command = --entityid="{entityid}" --entity="{entity}" %(console_attach_extra_args)s connect --console="{console}"
+console_attach = exec "%(ssh)s" -t -F "@pkgproxydatadir_POST@/ssh_config" -o GlobalKnownHostsFile="{known_hosts_file}" %(console_attach_ssh_args)s "%(ovirt_vmconsole_host_user)s@{host}" -- %(console_attach_command)s
+
+#
+# authorized_keys key prefix.
+#
+# Substitutions:
+# {entityid}
+# 	entity id to use.
+# {entity}
+# 	entity name, used for auditing.
+# {key}
+# 	entity's public key
+#
+authorized_keys_entry_extra_args =
+authorized_keys_entry = command="exec \"@sbindir_POST@/ovirt-vmconsole-proxy-shell\" %(authorized_keys_entry_extra_args)s accept --entityid=\"{entityid}\" --entity=\"{entity}\"",no-agent-forwarding,no-port-forwarding,no-user-rc,no-X11-forwarding {key}
+
+#
+# Delay before deleting known_hosts in background.
+#
+known_hosts_close_delay = 5

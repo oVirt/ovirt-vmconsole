@@ -1,0 +1,73 @@
+policy_module(ovirt_vmconsole, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+require {
+	attribute defined_port_type;
+	attribute port_type;
+	attribute ssh_server;
+	class tcp_socket { name_bind };
+	type sshd_exec_t;
+	type sshd_key_t;
+	type sshd_t;
+};
+
+type ovirt_vmconsole_exec_t;
+corecmd_executable_file(ovirt_vmconsole_exec_t)
+
+ssh_server_template(ovirt_vmconsole)
+
+domain_type(ovirt_vmconsole_t)
+domain_entry_file(ovirt_vmconsole_t, ovirt_vmconsole_exec_t)
+init_system_domain(ovirt_vmconsole_t, ovirt_vmconsole_exec_t)
+
+type ovirt_vmconsole_host_port_t, port_type;
+type ovirt_vmconsole_proxy_port_t, port_type;
+typeattribute ovirt_vmconsole_host_port_t defined_port_type;
+typeattribute ovirt_vmconsole_proxy_port_t defined_port_type;
+
+type ovirt_vmconsole_tmp_t;
+files_tmp_file(ovirt_vmconsole_tmp_t)
+files_poly_parent(ovirt_vmconsole_tmp_t)
+
+########################################
+#
+# Local policy
+#
+
+can_exec(ovirt_vmconsole_t, ovirt_vmconsole_exec_t)
+corecmd_exec_bin(ovirt_vmconsole_t)
+corecmd_exec_shell(ovirt_vmconsole_t)
+
+term_use_all_ptys(ovirt_vmconsole_t)
+term_setattr_all_ptys(ovirt_vmconsole_t)
+term_relabelto_all_ptys(ovirt_vmconsole_t)
+
+userdom_spec_domtrans_unpriv_users(ovirt_vmconsole_t)
+userdom_signal_unpriv_users(ovirt_vmconsole_t)
+
+allow ovirt_vmconsole_t ovirt_vmconsole_host_port_t:tcp_socket name_bind;
+allow ovirt_vmconsole_t ovirt_vmconsole_proxy_port_t:tcp_socket name_bind;
+allow ovirt_vmconsole_t self:capability net_bind_service;
+
+manage_dirs_pattern(ovirt_vmconsole_t, ovirt_vmconsole_tmp_t, ovirt_vmconsole_tmp_t)
+manage_files_pattern(ovirt_vmconsole_t, ovirt_vmconsole_tmp_t, ovirt_vmconsole_tmp_t)
+manage_sock_files_pattern(ovirt_vmconsole_t, ovirt_vmconsole_tmp_t, ovirt_vmconsole_tmp_t)
+files_tmp_filetrans(ovirt_vmconsole_t, ovirt_vmconsole_tmp_t, { dir file sock_file })
+
+# rhel6 init.d
+type ovirt_vmconsole_initrc_exec_t;
+init_script_file(ovirt_vmconsole_initrc_exec_t)
+init_daemon_domain(ovirt_vmconsole_t, ovirt_vmconsole_exec_t)
+
+# rhel6?
+userdom_dyntransition_unpriv_users(ovirt_vmconsole_t)
+allow ovirt_vmconsole_t self:process setcurrent;
+
+# rhel6 must
+ifdef(`enable_mcs',`
+	init_ranged_daemon_domain(ovirt_vmconsole_t, ovirt_vmconsole_exec_t, s0 - mcs_systemhigh)
+')

@@ -1,0 +1,31 @@
+#
+# ovirt-vmconsole-host configuration.
+#
+[host]
+
+#
+# Enable debug logging
+#
+debug = false
+
+#
+# Programs.
+#
+socat = @SOCAT@
+shell = /bin/sh
+
+#
+# Location of console directory.
+#
+consoledir = @consoledir_POST@
+
+#
+# Console attach command.
+# Executed when console is to be attached.
+#
+# Substitutions:
+# socket
+# 	socket to use.
+#
+console_attach_socat_options =
+console_attach = exec "%(socat)s" %(console_attach_socat_options)s -,raw,echo=0 UNIX-CONNECT:"{socket}"

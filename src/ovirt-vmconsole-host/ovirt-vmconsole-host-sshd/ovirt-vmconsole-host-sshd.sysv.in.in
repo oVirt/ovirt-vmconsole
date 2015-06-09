@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# ovirt-vmconsole-host-sshd		Start up the oVirt VM Console SSH daemon
+#
+# chkconfig: - 58 74
+# description: oVirt VM Console SSH daemon enables access to serial consoles.
+#
+# processname: sshd
+# pidfile: /var/run/ovirt-vmconsole-host-sshd.pid
+
+### BEGIN INIT INFO
+# Provides: ovirt-vmconsole-host-sshd
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $syslog
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Start:
+# Default-Stop:
+# Short-Description: oVirt VM Console SSH daemon
+# Description:       oVirt VM Console SSH daemon
+### END INIT INFO
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# pull in sysconfig settings
+[ -f @sysconfdir_POST@/sysconfig/ovirt-vmconsole-host-sshd ] && . @sysconfdir_POST@/sysconfig/ovirt-vmconsole-host-sshd
+
+RETVAL=0
+prog="ovirt-vmconsole-host-sshd"
+lockfile="@localstatedir_POST@/lock/subsys/${prog}"
+
+USER="@VMCONSOLE_USER@"
+OVIRT_VMCONSOLE_SSHD="@sbindir_POST@/${prog}"
+PID_FILE="@localstatedir_POST@/run/${prog}.pid"
+
+start()
+{
+	[ -x "${OVIRT_VMCONSOLE_SSHD}" ] || exit 5
+	[ -f "@pkghostdatadir_POST@/ovirt-vmconsole-host-sshd/sshd_config" ] || exit 6
+
+	echo -n $"Starting ${prog}: "
+	touch "${PID_FILE}"
+	chown "${USER}" "${PID_FILE}"
+	daemon --user "${USER}" --pidfile="${PID_FILE}" \
+		"${OVIRT_VMCONSOLE_SSHD}" \
+			-f "@pkghostdatadir_POST@/ovirt-vmconsole-host-sshd/sshd_config" \
+			-o PidFile="${PID_FILE}" \
+			${OPTIONS} \
+			&& success || failure
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch "${lockfile}"
+	echo
+	return $RETVAL
+}
+
+stop()
+{
+	echo -n $"Stopping ${prog}: "
+	killproc -p "${PID_FILE}" "${OVIRT_VMCONSOLE_SSHD}"
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && rm -f "${lockfile}"
+	echo
+}
+
+reload()
+{
+	echo -n $"Reloading ${prog}: "
+	killproc -p "${PID_FILE}" "${OVIRT_VMCONSOLE_SSHD}" -HUP
+	RETVAL=$?
+	echo
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	reload)
+		reload
+		;;
+	status)
+		status -p "${PIDFILE}" "${OVIRT_VMCONSOLE_SSHD}"
+		RETVAL=$?
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|restart|reload|status}"
+		RETVAL=2
+esac
+exit $RETVAL

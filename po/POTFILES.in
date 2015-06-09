@@ -1,0 +1,10 @@
+./src/ovirt_vmconsole/common/base.py
+./src/ovirt_vmconsole/common/__init__.py
+./src/ovirt_vmconsole/common/utils.py
+./src/ovirt_vmconsole/__init__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_host_shell/__init__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_host_shell/__main__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_proxy_keys/__init__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_proxy_keys/__main__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_proxy_shell/__init__.py
+./src/ovirt_vmconsole/ovirt_vmconsole_proxy_shell/__main__.py

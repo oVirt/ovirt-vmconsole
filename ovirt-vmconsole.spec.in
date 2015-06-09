@@ -1,0 +1,259 @@
+%global		package_version @PACKAGE_VERSION@
+%global		package_maven_version @PACKAGE_MAVEN_VERSION@
+
+%if 0%{?fedora}
+%global ovirt_install_systemd 1
+%global ovirt_install_systemv 0
+%endif
+
+%if 0%{?rhel}
+%if 0%{?rhel} >= 7
+%global ovirt_install_systemd 1
+%global ovirt_install_systemv 0
+%else
+%global ovirt_install_systemd 0
+%global ovirt_install_systemv 1
+%endif
+%endif
+
+Summary:	oVirt VM console
+Name:		@PACKAGE_NAME@
+Version:	@PACKAGE_RPM_VERSION@
+Release:	@PACKAGE_RPM_RELEASE@%{?release_suffix}%{?dist}
+License:	GPLv3
+URL:		http://www.ovirt.org
+Source:		http://resources.ovirt.org/pub/src/%{name}/%{name}-%{package_version}.tar.gz
+
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:	noarch
+
+BuildRequires:	checkpolicy
+BuildRequires:	gettext
+BuildRequires:	openssh-clients
+BuildRequires:	openssh-server
+BuildRequires:	python2-devel
+BuildRequires:	selinux-policy-devel
+BuildRequires:	socat
+
+Requires:	python
+Requires:	python-argparse
+
+Requires(post):		policycoreutils-python
+Requires(preun):	policycoreutils
+Requires(postun):	policycoreutils-python
+
+%description
+oVirt VM console proxy
+
+%package host
+Summary:	oVirt VM console host components
+
+Requires:	%{name} = %{version}-%{release}
+Requires:	openssh-server
+Requires:	socat
+
+Requires(post):		policycoreutils-python
+Requires(postun):	policycoreutils-python
+
+%if %{ovirt_install_systemd}
+BuildRequires:		systemd
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%endif
+
+%description host
+oVirt VM console host components
+
+%package proxy
+Summary:	oVirt VM console proxy components
+
+Requires:	%{name} = %{version}-%{release}
+Requires:	openssh-clients
+
+Requires(post):		policycoreutils-python
+Requires(postun):	policycoreutils-python
+
+%if %{ovirt_install_systemd}
+BuildRequires:		systemd
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%endif
+
+%description proxy
+oVirt VM console proxy components
+
+%pre
+getent group %{name} >/dev/null || \
+	groupadd -r %{name}
+getent passwd %{name} >/dev/null || \
+	useradd \
+		-r \
+		-g %{name} \
+		-c "oVirt VM Console" \
+		-s /bin/sh \
+		-d %{_datadir}/%{name}/empty \
+		%{name}
+
+%post
+semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+fixfiles -R %{name} restore
+
+%preun
+if [ $1 -eq 0 ]; then
+	semodule -r ovirt_vmconsole
+	fixfiles -R %{name} restore
+fi
+
+%postun
+if [ "$1" -ge "1" ]; then
+	semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+fi
+
+%post host
+semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223
+fixfiles -R %{name}-host restore
+
+%if %{ovirt_install_systemd}
+%systemd_post ovirt-vmconsole-host-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+chkconfig --add ovirt-vmconsole-host-sshd
+%endif
+
+%preun host
+if [ $1 -eq 0 ]; then
+	semanage port -d -p tcp 2223 || :
+fi
+
+%if %{ovirt_install_systemd}
+%systemd_preun ovirt-vmconsole-host-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+if [ $1 -eq 0 ]; then
+	service ovirt-vmconsole-host-sshd stop > /dev/null 2>&1 || true
+	chkconfig --del ovirt-vmconsole-host-sshd
+fi
+%endif
+
+%if %{ovirt_install_systemd}
+%systemd_postun ovirt-vmconsole-host-sshd.service
+%endif
+
+%post proxy
+fixfiles -R %{name}-proxy restore
+semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222
+
+%if %{ovirt_install_systemd}
+%systemd_post ovirt-vmconsole-proxy-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+chkconfig --add ovirt-vmconsole-proxy-sshd
+%endif
+
+%preun proxy
+if [ $1 -eq 0 ]; then
+	semanage port -d -p tcp 2222 || :
+fi
+
+%if %{ovirt_install_systemd}
+%systemd_preun ovirt-vmconsole-proxy-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+if [ $1 -eq 0 ]; then
+	service ovirt-vmconsole-proxy-sshd stop > /dev/null 2>&1 || true
+	chkconfig --del ovirt-vmconsole-proxy-sshd
+fi
+%endif
+
+%if %{ovirt_install_systemd}
+%systemd_postun ovirt-vmconsole-proxy-sshd.service
+%endif
+
+%prep
+%setup -q -n %{name}-%{package_version}
+%if 0%{?rhel}
+%if 0%{?rhel} < 7
+sed -i '/AuthorizedKeysCommandUser/d' ./src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/sshd_config.in.in
+sed -i \
+	-e '/defined_port_type/d' \
+	selinux-ovirt_vmconsole/ovirt_vmconsole.te
+%endif
+%endif
+
+%build
+%configure \
+	--with-local-version="%{name}-%{version}-%{release}" \
+	%{?conf}
+make %{?_smp_mflags}
+make -f /usr/share/selinux/devel/Makefile -C selinux-ovirt_vmconsole
+
+%install
+rm -rf "%{buildroot}"
+make %{?_smp_mflags} install DESTDIR="%{buildroot}"
+install -dm 755 "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
+install -m 644 selinux-ovirt_vmconsole/ovirt_vmconsole.pp "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
+
+#
+# Register services
+#
+%if %{ovirt_install_systemd}
+install -dm 755 "%{buildroot}%{_unitdir}"
+install -m 644 "src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/ovirt-vmconsole-host-sshd.systemd" "%{buildroot}%{_unitdir}/ovirt-vmconsole-host-sshd.service"
+install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmconsole-proxy-sshd.systemd" "%{buildroot}%{_unitdir}/ovirt-vmconsole-proxy-sshd.service"
+%endif
+
+%if %{ovirt_install_systemv}
+install -dm 755 "%{buildroot}%{_initddir}"
+install -m 755 "src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/ovirt-vmconsole-host-sshd.sysv" "%{buildroot}%{_initddir}/ovirt-vmconsole-host-sshd"
+install -m 755 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmconsole-proxy-sshd.sysv" "%{buildroot}%{_initddir}/ovirt-vmconsole-proxy-sshd"
+%endif
+
+%if 0%{?rhel}
+%if 0%{?rhel} < 7
+# old ssh tries to unconditionally create ~/.ssh
+install -dm 700 --owner=ovirt-vmconsole "%{_datadir}/%{name}/empty/.ssh"
+%endif
+%endif
+
+%files
+%dir %{_datadir}/%{name}
+%dir %{_sysconfdir}/%{name}
+%dir %{python_sitelib}/ovirt_vmconsole
+%{_datadir}/%{name}/empty/
+%{_datadir}/selinux/packages/%{name}/
+%{_docdir}/%{name}/
+%{_sysconfdir}/pki/%{name}/
+%{python_sitelib}/ovirt_vmconsole/__init__.py*
+%{python_sitelib}/ovirt_vmconsole/common/
+
+%files host
+%{_datadir}/%{name}/ovirt-vmconsole-host/
+%{_sbindir}/ovirt-vmconsole-host-*
+%{_sysconfdir}/%{name}/ovirt-vmconsole-host/
+%{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_host_*/
+
+%if %{ovirt_install_systemd}
+%{_unitdir}/ovirt-vmconsole-host-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+%{_initddir}/ovirt-vmconsole-host-sshd
+%endif
+
+%files proxy
+%{_datadir}/%{name}/ovirt-vmconsole-proxy/
+%{_sbindir}/ovirt-vmconsole-proxy-*
+%{_sysconfdir}/%{name}/ovirt-vmconsole-proxy/
+%{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_proxy_*/
+
+%if %{ovirt_install_systemd}
+%{_unitdir}/ovirt-vmconsole-proxy-sshd.service
+%endif
+%if %{ovirt_install_systemv}
+%{_initddir}/ovirt-vmconsole-proxy-sshd
+%endif
+
+%changelog
+* Tue Feb 10 2015 Alon Bar-Lev <alonbl@redhat.com> - 1.0.0-1
+- Initial add.

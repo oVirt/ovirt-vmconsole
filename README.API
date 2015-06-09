@@ -1,0 +1,54 @@
+OVIRT-VMCONSOLE API
+===================
+
+OVIRT-VMCONSOLE-PROXY
+---------------------
+
+KEY LIST
+
+The command is set in configuration proxy:key_list.
+
+Substitutions:
+- {version}
+- {keyfp}*
+- {keytype}* - example: ssh-rsa, ecdsa-sha2-nistp256
+- {key}* - key content
+
+* if empty list all keys.
+
+Standard output is at the following json notation:
+{
+    "content": "key_list",
+    "version": 1,
+    "keys": [
+        {
+            "entityid": ""      # entity unique id
+            "entity": "",       # entity name
+            "key": ""           # ssh public key no new line allowed
+        }
+    ]
+}
+
+entity and entityid must be plain ASCII (digits, letters, -_{})
+
+CONSOLE LIST
+
+The command is set in configuration proxy:console_list.
+
+Substitutions:
+- {version}
+- {entityid}
+
+Standard output is at the following json notation:
+{
+    "content": "console_list",
+    "version": 1,
+    "consoles": [
+        {
+            "vmid": ""          # vm unique id
+            "vm": "",           # vm name
+            "host": "",         # host address where console resides
+            "console": ""       # console name at host
+        }
+    ]
+}

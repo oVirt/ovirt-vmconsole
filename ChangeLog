@@ -1,0 +1,7 @@
+ovirt-vmconsole -- secure access to VM serial console
+
+????-??-?? - Version 1.0.0
+
+Alon Bar-Lev <alonbl@redhat.com>
+
+ * Initial implementation.
