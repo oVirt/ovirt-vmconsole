@@ -213,7 +213,7 @@ install -m 755 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %if 0%{?rhel}
 %if 0%{?rhel} < 7
 # old ssh tries to unconditionally create ~/.ssh
-install -dm 700 --owner=ovirt-vmconsole "%{_datadir}/%{name}/empty/.ssh"
+install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 %endif
 
@@ -227,6 +227,12 @@ install -dm 700 --owner=ovirt-vmconsole "%{_datadir}/%{name}/empty/.ssh"
 %{_sysconfdir}/pki/%{name}/
 %{python_sitelib}/ovirt_vmconsole/__init__.py*
 %{python_sitelib}/ovirt_vmconsole/common/
+
+%if 0%{?rhel}
+%if 0%{?rhel} < 7
+%dir %attr(-, %{name}, %{name}) %{_datadir}/%{name}/empty/.ssh
+%endif
+%endif
 
 %files host
 %{_datadir}/%{name}/ovirt-vmconsole-host/
