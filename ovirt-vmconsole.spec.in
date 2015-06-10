@@ -33,7 +33,6 @@ BuildRequires:	openssh-clients
 BuildRequires:	openssh-server
 BuildRequires:	python2-devel
 BuildRequires:	selinux-policy-devel
-BuildRequires:	socat
 
 Requires:	python
 Requires:	python-argparse
@@ -185,6 +184,7 @@ sed -i \
 %build
 %configure \
 	--with-local-version="%{name}-%{version}-%{release}" \
+	SOCAT=/usr/bin/socat \
 	%{?conf}
 make %{?_smp_mflags}
 make -f /usr/share/selinux/devel/Makefile -C selinux-ovirt_vmconsole
