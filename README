@@ -15,7 +15,7 @@ ssh daemon implementation that runs on the host end enables trusted
 connections to access the consoles. Consoles are assumed to be unix domain
 sockets that are directly attached to qemu virtual serial.
 
-ovirt-vmconsole-proxy 
+ovirt-vmconsole-proxy
 
 ssh daemon implementation that runs on the end user accessible host, users
 access the proxy, based on their public key the authorized consoles are
