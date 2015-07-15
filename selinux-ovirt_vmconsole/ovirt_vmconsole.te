@@ -71,3 +71,15 @@ allow ovirt_vmconsole_t self:process setcurrent;
 ifdef(`enable_mcs',`
 	init_ranged_daemon_domain(ovirt_vmconsole_t, ovirt_vmconsole_exec_t, s0 - mcs_systemhigh)
 ')
+
+#
+# Enable connection to network
+# This is required for hook to communicate
+# with remote.
+#
+allow ovirt_vmconsole_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(ovirt_vmconsole_t)
+corenet_tcp_sendrecv_generic_node(ovirt_vmconsole_t)
+corenet_tcp_sendrecv_all_ports(ovirt_vmconsole_t)
+corenet_tcp_connect_all_ports(ovirt_vmconsole_t)
+corenet_all_recvfrom_unlabeled(ovirt_vmconsole_t)
