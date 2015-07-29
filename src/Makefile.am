@@ -19,7 +19,7 @@ SUBDIRS = \
 	ovirt_vmconsole \
 	$(NULL)
 
-nodist_sbin_SCRIPTS = \
+nodist_libexec_SCRIPTS = \
 	$(NULL)
 
 pkgpki_DATA = \

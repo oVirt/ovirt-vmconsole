@@ -2,7 +2,7 @@ AllowAgentForwarding no
 #AllowStreamLocalForwarding no
 AllowTcpForwarding no
 AllowUsers @VMCONSOLE_USER@
-AuthorizedKeysCommand @sbindir_POST@/ovirt-vmconsole-proxy-keys
+AuthorizedKeysCommand @libexecdir_POST@/ovirt-vmconsole-proxy-keys
 AuthorizedKeysCommandUser @VMCONSOLE_USER@
 ChallengeResponseAuthentication no
 GSSAPIAuthentication no

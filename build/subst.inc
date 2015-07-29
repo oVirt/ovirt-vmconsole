@@ -2,9 +2,10 @@
 	if sed \
 		-e 's#[@]bindir_POST@#$(bindir)#g' \
 		-e 's#[@]consoledir_POST@#$(consoledir)#g' \
+		-e 's#[@]libexecdir_POST@#$(libexecdir)#g' \
 		-e 's#[@]localstatedir_POST@#$(localstatedir)#g' \
-		-e 's#[@]pkgemptydir_POST@#$(pkgemptydir)#g' \
 		-e 's#[@]pkgdatadir_POST@#$(pkgdatadir)#g' \
+		-e 's#[@]pkgemptydir_POST@#$(pkgemptydir)#g' \
 		-e 's#[@]pkghostdatadir_POST@#$(pkghostdatadir)#g' \
 		-e 's#[@]pkghostsysconfdir_POST@#$(pkghostsysconfdir)#g' \
 		-e 's#[@]pkgpkidir_POST@#$(pkgpkidir)#g' \

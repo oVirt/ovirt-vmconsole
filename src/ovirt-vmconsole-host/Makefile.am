@@ -18,7 +18,7 @@ SUBDIRS = \
 	ovirt-vmconsole-host-sshd \
 	$(NULL)
 
-nodist_sbin_SCRIPTS = \
+nodist_libexec_SCRIPTS = \
 	ovirt-vmconsole-host-shell \
 	$(NULL)
 

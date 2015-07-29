@@ -17,7 +17,7 @@ noinst_DATA = \
 	ovirt-vmconsole-host-sshd.sysv \
 	$(NULL)
 
-sbin_SCRIPTS = \
+libexec_SCRIPTS = \
 	ovirt-vmconsole-host-sshd \
 	$(NULL)
 

@@ -17,7 +17,7 @@ noinst_DATA = \
 	ovirt-vmconsole-proxy-sshd.sysv \
 	$(NULL)
 
-sbin_SCRIPTS = \
+libexec_SCRIPTS = \
 	ovirt-vmconsole-proxy-sshd \
 	$(NULL)
 

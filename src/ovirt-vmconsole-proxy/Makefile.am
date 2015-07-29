@@ -19,7 +19,7 @@ SUBDIRS = \
 	ovirt-vmconsole-proxy-sshd \
 	$(NULL)
 
-nodist_sbin_SCRIPTS = \
+nodist_libexec_SCRIPTS = \
 	ovirt-vmconsole-proxy-keys \
 	ovirt-vmconsole-proxy-shell \
 	$(NULL)

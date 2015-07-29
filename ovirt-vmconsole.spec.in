@@ -236,7 +236,7 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 
 %files host
 %{_datadir}/%{name}/ovirt-vmconsole-host/
-%{_sbindir}/ovirt-vmconsole-host-*
+%{_libexecdir}/ovirt-vmconsole-host-*
 %{_sysconfdir}/%{name}/ovirt-vmconsole-host/
 %{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_host_*/
 
@@ -249,7 +249,7 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 
 %files proxy
 %{_datadir}/%{name}/ovirt-vmconsole-proxy/
-%{_sbindir}/ovirt-vmconsole-proxy-*
+%{_libexecdir}/ovirt-vmconsole-proxy-*
 %{_sysconfdir}/%{name}/ovirt-vmconsole-proxy/
 %{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_proxy_*/
 

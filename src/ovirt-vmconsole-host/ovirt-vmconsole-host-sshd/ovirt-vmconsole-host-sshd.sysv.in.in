@@ -31,7 +31,7 @@ prog="ovirt-vmconsole-host-sshd"
 lockfile="@localstatedir_POST@/lock/subsys/${prog}"
 
 USER="@VMCONSOLE_USER@"
-OVIRT_VMCONSOLE_SSHD="@sbindir_POST@/${prog}"
+OVIRT_VMCONSOLE_SSHD="@libexecdir_POST@/${prog}"
 PID_FILE="@localstatedir_POST@/run/${prog}.pid"
 
 start()

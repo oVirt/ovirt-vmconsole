@@ -3,7 +3,7 @@
 # MLS sensitivity: s0
 # MCS categories: <none>
 
-@sbindir_POST@/ovirt-vmconsole-host-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_exec_t,s0)
-@sbindir_POST@/ovirt-vmconsole-proxy-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_exec_t,s0)
+@libexecdir_POST@/ovirt-vmconsole-host-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_exec_t,s0)
+@libexecdir_POST@/ovirt-vmconsole-proxy-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_exec_t,s0)
 @sysconfdir_POST@/rc\.d/init\.d/ovirt-vmconsole-host-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_initrc_exec_t,s0)
 @sysconfdir_POST@/rc\.d/init\.d/ovirt-vmconsole-proxy-sshd	--	gen_context(system_u:object_r:ovirt_vmconsole_initrc_exec_t,s0)

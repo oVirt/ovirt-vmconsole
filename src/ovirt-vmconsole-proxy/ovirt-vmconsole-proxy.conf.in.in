@@ -72,7 +72,7 @@ console_attach = exec "%(ssh)s" -t -F "@pkgproxydatadir_POST@/ssh_config" -o Glo
 # 	entity's public key
 #
 authorized_keys_entry_extra_args =
-authorized_keys_entry = command="exec \"@sbindir_POST@/ovirt-vmconsole-proxy-shell\" %(authorized_keys_entry_extra_args)s accept --entityid=\"{entityid}\" --entity=\"{entity}\"",no-agent-forwarding,no-port-forwarding,no-user-rc,no-X11-forwarding {key}
+authorized_keys_entry = command="exec \"@libexecdir_POST@/ovirt-vmconsole-proxy-shell\" %(authorized_keys_entry_extra_args)s accept --entityid=\"{entityid}\" --entity=\"{entity}\"",no-agent-forwarding,no-port-forwarding,no-user-rc,no-X11-forwarding {key}
 
 #
 # Delay before deleting known_hosts in background.
