@@ -196,6 +196,11 @@ install -dm 755 "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
 install -m 644 selinux-ovirt_vmconsole/ovirt_vmconsole.pp "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
 
 #
+# workaround rpmlint warnings
+#
+find "%{buildroot}" -name .keep -exec rm {} \;
+
+#
 # Register services
 #
 %if %{ovirt_install_systemd}
