@@ -1,4 +1,4 @@
-policy_module(ovirt_vmconsole, 1.0.0)
+policy_module(ovirt_vmconsole, 1.0.1)
 
 ########################################
 #
@@ -66,6 +66,9 @@ init_daemon_domain(ovirt_vmconsole_t, ovirt_vmconsole_exec_t)
 # rhel6?
 userdom_dyntransition_unpriv_users(ovirt_vmconsole_t)
 allow ovirt_vmconsole_t self:process setcurrent;
+allow ovirt_vmconsole_t self:process dyntransition;
+unconfined_domain(ovirt_vmconsole_t)
+unconfined_shell_domtrans(ovirt_vmconsole_t)
 
 # rhel6 must
 ifdef(`enable_mcs',`
