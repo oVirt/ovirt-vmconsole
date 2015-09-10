@@ -4,13 +4,13 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/Makefile.in \
 	$(NULL)
 CLEANFILES = \
-	README \
+	NOTICE \
 	ovirt-vmconsole-proxy.conf \
 	ssh_config \
 	$(NULL)
 
 EXTRA_DIST = \
-	README.in \
+	NOTICE.in \
 	$(NULL)
 
 SUFFIXES = .in
@@ -32,5 +32,5 @@ nodist_pkgproxydata_DATA = \
 confdir = $(pkgproxysysconfdir)/conf.d
 
 nodist_conf_DATA = \
-	README \
+	NOTICE \
 	$(NULL)

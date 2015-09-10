@@ -4,12 +4,12 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/Makefile.in \
 	$(NULL)
 CLEANFILES = \
-	README \
+	NOTICE \
 	ovirt-vmconsole-host.conf \
 	$(NULL)
 
 EXTRA_DIST = \
-	README.in \
+	NOTICE.in \
 	$(NULL)
 
 SUFFIXES = .in
@@ -29,5 +29,5 @@ nodist_pkghostdata_DATA = \
 confdir = $(pkghostsysconfdir)/conf.d
 
 nodist_conf_DATA = \
-	README \
+	NOTICE \
 	$(NULL)
