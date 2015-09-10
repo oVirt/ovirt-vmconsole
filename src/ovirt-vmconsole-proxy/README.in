@@ -1,2 +1,2 @@
 Defaults and examples for configuration are located at:
-@pkghostdatadir_POST@/ovirt-vmconsole-host.conf
+@pkgproxydatadir_POST@/ovirt-vmconsole-proxy.conf
