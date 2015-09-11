@@ -111,7 +111,7 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %post host
-semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223
+semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
 fixfiles -R %{name}-host restore
 
 %if %{ovirt_install_systemd}
@@ -131,7 +131,7 @@ fi
 %endif
 %if %{ovirt_install_systemv}
 if [ $1 -eq 0 ]; then
-	service ovirt-vmconsole-host-sshd stop > /dev/null 2>&1 || true
+	service ovirt-vmconsole-host-sshd stop > /dev/null 2>&1 || :
 	chkconfig --del ovirt-vmconsole-host-sshd
 fi
 %endif
@@ -142,7 +142,7 @@ fi
 
 %post proxy
 fixfiles -R %{name}-proxy restore
-semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222
+semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222 || :
 
 %if %{ovirt_install_systemd}
 %systemd_post ovirt-vmconsole-proxy-sshd.service
@@ -161,7 +161,7 @@ fi
 %endif
 %if %{ovirt_install_systemv}
 if [ $1 -eq 0 ]; then
-	service ovirt-vmconsole-proxy-sshd stop > /dev/null 2>&1 || true
+	service ovirt-vmconsole-proxy-sshd stop > /dev/null 2>&1 || :
 	chkconfig --del ovirt-vmconsole-proxy-sshd
 fi
 %endif
