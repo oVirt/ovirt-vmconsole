@@ -24,6 +24,10 @@ class UserVisibleRuntimeError(RuntimeError):
     pass
 
 
+class UserExit(RuntimeError):
+    pass
+
+
 class Main(base.Base):
 
     NAME = 'ovirt-vmconsole-proxy-shell'
@@ -140,12 +144,17 @@ class Main(base.Base):
                 l = sys.stdin.readline()
                 if not l:
                     raise UserVisibleRuntimeError('EOF')
+                l = l.rstrip('\r\n')
+                if l == 'exit':
+                    raise UserExit()
                 try:
-                    i = int(l.rstrip('\n'))
-                    if i >= 0 and i < len(consoles):
+                    i = int(l)
+                    if i < 0 or i >= len(consoles):
+                        sys.stderr.write(_('Invalid selection\n'))
+                    else:
                         entry = consoles[i]
                 except ValueError:
-                    pass
+                    sys.stderr.write(_('Invalid selection\n'))
 
         self.logger.debug('Reading CA key')
         with open(os.path.join(config.pkgpkidir, 'ca.pub')) as f:
@@ -390,7 +399,7 @@ class Main(base.Base):
             self._args.func()
             self._userargs.func()
             ret = 0
-        except KeyboardInterrupt:
+        except (UserExit, KeyboardInterrupt):
             pass
         except UserVisibleRuntimeError as e:
             self.logger.error('%s', str(e))
