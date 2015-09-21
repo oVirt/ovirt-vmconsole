@@ -26,7 +26,7 @@ tmp.*
 
 selinux-ovirt_vmconsole/ovirt_vmconsole.fc
 selinux-ovirt_vmconsole/ovirt_vmconsole.fc.in
-src/ovirt-vmconsole-host/README
+src/ovirt-vmconsole-host/NOTICE
 src/ovirt-vmconsole-host/ovirt-vmconsole-host-shell
 src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/authorized_principals
 src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/ovirt-vmconsole-host-sshd
@@ -38,7 +38,7 @@ src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/sshd_config
 src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/sshd_config.in
 src/ovirt-vmconsole-host/ovirt-vmconsole-host.conf
 src/ovirt-vmconsole-host/ovirt-vmconsole-host.conf.in
-src/ovirt-vmconsole-proxy/README
+src/ovirt-vmconsole-proxy/NOTICE
 src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-keys
 src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-shell
 src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmconsole-proxy-sshd
