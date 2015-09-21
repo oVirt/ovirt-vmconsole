@@ -126,6 +126,8 @@ class Main(base.Base):
                         vm=self._userargs.vm_name,
                     )
                 )
+        elif len(consoles) == 1:
+            entry = consoles[0]
         else:
             menu = self._config.get('proxy', 'console_menu_title')
             if not menu:
