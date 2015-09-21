@@ -126,6 +126,10 @@ class Main(base.Base):
                         vm=self._userargs.vm_name,
                     )
                 )
+        elif len(consoles) == 0:
+            raise UserVisibleRuntimeError(
+                _("No available running VMs")
+            )
         elif len(consoles) == 1:
             entry = consoles[0]
         else:
