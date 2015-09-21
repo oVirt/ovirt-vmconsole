@@ -89,7 +89,7 @@ class Main(base.Base):
                 )
 
             sys.stdout.write(
-                self._config.get(
+                '%s\n' % self._config.get(
                     'proxy',
                     'authorized_keys_entry'
                 ).format(
