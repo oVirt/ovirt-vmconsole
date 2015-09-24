@@ -110,15 +110,10 @@ AC_ARG_VAR([SSH], [full path to ssh])
 AC_PATH_PROGS([SSH], [ssh],, [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin])
 AC_ARG_VAR([SSHD], [full path to sshd])
 AC_PATH_PROGS([SSHD], [sshd],, [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin])
-AC_ARG_VAR([SOCAT], [full path to socat])
-AC_PATH_PROGS([SOCAT], [socat],, [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin])
 
 test -n "${SSHD}" || AC_MSG_ERROR([sshd cannot be found])
 if test "${enable_ovirt_vmconsole_host}" = "yes"; then
 	test -n "${SSH}" || AC_MSG_ERROR([ssh cannot be found])
-fi
-if test "${enable_ovirt_vmconsole_proxy}" = "yes"; then
-	test -n "${SOCAT}" || AC_MSG_ERROR([socat cannot be found])
 fi
 
 AC_SUBST([consoledir])

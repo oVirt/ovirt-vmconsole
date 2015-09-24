@@ -11,6 +11,7 @@ import termios
 from ..common import base
 from ..common import config
 from ..common import utils
+from . import socketproxy
 
 
 def _(m):
@@ -111,18 +112,13 @@ class Main(base.Base):
             ),
         )
 
-        cmd = self._config.get('host', 'console_attach').format(
+        with socketproxy.Proxy(
             socket=socket,
-        )
-        self.logger.debug('Executing: %s', cmd)
-        os.execv(
-            self._config.get('host', 'shell'),
-            [
-                self._config.get('host', 'shell'),
-                '-c', cmd,
-            ],
-        )
-        raise RuntimeError('Cannot execute socat')
+            timeout=self._config.getint('host', 'socketproxy_timeout'),
+            bufsize=self._config.getint('host', 'socketproxy_bufsize'),
+            trace=self._config.getboolean('host', 'socketproxy_trace'),
+        ) as proxy:
+            proxy.run()
 
     def parse_args(self, cmdline):
         parser = argparse.ArgumentParser(

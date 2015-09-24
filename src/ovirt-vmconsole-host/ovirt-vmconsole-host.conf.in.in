@@ -11,7 +11,6 @@ debug = false
 #
 # Programs.
 #
-socat = @SOCAT@
 shell = /bin/sh
 
 #
@@ -20,12 +19,8 @@ shell = /bin/sh
 consoledir = @consoledir_POST@
 
 #
-# Console attach command.
-# Executed when console is to be attached.
+# Socket proxy options
 #
-# Substitutions:
-# socket
-# 	socket to use.
-#
-console_attach_socat_options =
-console_attach = exec "%(socat)s" %(console_attach_socat_options)s -,raw,echo=0 UNIX-CONNECT:"{socket}"
+socketproxy_timeout = -1
+socketproxy_bufsize = 1024
+socketproxy_trace = false

@@ -49,7 +49,6 @@ Summary:	oVirt VM console host components
 
 Requires:	%{name} = %{version}-%{release}
 Requires:	openssh-server
-Requires:	socat
 
 Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
@@ -184,7 +183,6 @@ sed -i \
 %build
 %configure \
 	--with-local-version="%{name}-%{version}-%{release}" \
-	SOCAT=/usr/bin/socat \
 	%{?conf}
 make %{?_smp_mflags}
 make -f /usr/share/selinux/devel/Makefile -C selinux-ovirt_vmconsole

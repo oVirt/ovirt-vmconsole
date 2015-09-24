@@ -9,6 +9,7 @@ mypythonmoduledir = $(mypythonlibdir)/ovirt_vmconsole_host_shell
 mypythonmodule_PYTHON = \
 	__init__.py \
 	__main__.py \
+	socketproxy.py \
 	$(NULL)
 
 clean-local: \
