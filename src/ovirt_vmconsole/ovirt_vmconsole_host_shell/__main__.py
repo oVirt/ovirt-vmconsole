@@ -145,8 +145,10 @@ class Main(base.Base):
         )
 
         subparsers = parser.add_subparsers(
+            dest='command',
             help=_('sub-command help'),
         )
+        subparsers.required = True
 
         helpParser = subparsers.add_parser(
             'help',
