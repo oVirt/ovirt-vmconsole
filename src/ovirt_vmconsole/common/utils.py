@@ -46,6 +46,7 @@ def setupLogger(processName=None):
         h.setFormatter(
             _MyFormatter(
                 fmt=(
+                    '%(asctime)s '
                     '{process}[{pid}]: '
                     '%(levelname)s '
                     '%(message)s'
@@ -56,6 +57,7 @@ def setupLogger(processName=None):
                     ),
                     pid=os.getpid(),
                 ),
+                datefmt='%b %d %H:%M:%S',
             ),
         )
         logger.addHandler(h)
