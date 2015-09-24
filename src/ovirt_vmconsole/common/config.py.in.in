@@ -9,3 +9,6 @@ pkghostsysconfdir = '@pkghostsysconfdir_POST@'
 pkgpkidir = '@pkgpkidir_POST@'
 pkgproxydatadir = '@pkgproxydatadir_POST@'
 pkgproxysysconfdir = '@pkgproxysysconfdir_POST@'
+
+
+# vim: expandtab tabstop=4 shiftwidth=4

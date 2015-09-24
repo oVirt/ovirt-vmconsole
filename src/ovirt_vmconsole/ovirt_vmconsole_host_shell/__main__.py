@@ -232,3 +232,6 @@ class Main(base.Base):
 if __name__ == '__main__':
     os.umask(0o022)
     sys.exit(Main().main())
+
+
+# vim: expandtab tabstop=4 shiftwidth=4
