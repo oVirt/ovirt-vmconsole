@@ -264,5 +264,5 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
-* Tue Feb 10 2015 Alon Bar-Lev <alonbl@redhat.com> - 1.0.0-1
+* Thu Oct 15 2015 Alon Bar-Lev <alonbl@redhat.com> - 1.0.0-1
 - Initial add.
