@@ -2,11 +2,15 @@ PYTHON_SYNTAX_CHECK_FILES = $(srcdir)/*.py
 
 python-syntax-check:
 if PYTHON_SYNTAX_CHECK
+	FILES="$(AM_PYTHON_SYNTAX_CHECK_FILES)"; \
+	FILES="$${FILES:-$(PYTHON_SYNTAX_CHECK_FILES)}"; \
 	if [ -n "$(PYFLAKES)" ]; then \
-		$(PYFLAKES) $(PYTHON_SYNTAX_CHECK_FILES); \
+		$(PYFLAKES) $${FILES}; \
 	fi
+	FILES="$(AM_PYTHON_SYNTAX_CHECK_FILES)"; \
+	FILES="$${FILES:-$(PYTHON_SYNTAX_CHECK_FILES)}"; \
 	if [ -n "$(PEP8)" ]; then \
-		$(PEP8) $(PYTHON_SYNTAX_CHECK_FILES); \
+		$(PEP8) $${FILES}; \
 	fi
 endif
 
