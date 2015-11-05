@@ -5,6 +5,8 @@ AllowUsers @VMCONSOLE_USER@
 AuthorizedKeysFile /dev/null
 AuthorizedPrincipalsFile @pkghostdatadir_POST@/ovirt-vmconsole-host-sshd/authorized_principals
 ChallengeResponseAuthentication no
+ClientAliveCountMax 3
+ClientAliveInterval 10
 ForceCommand @libexecdir_POST@/ovirt-vmconsole-host-shell
 GSSAPIAuthentication no
 HostCertificate @pkgpkidir_POST@/host-ssh_host_rsa-cert.pub

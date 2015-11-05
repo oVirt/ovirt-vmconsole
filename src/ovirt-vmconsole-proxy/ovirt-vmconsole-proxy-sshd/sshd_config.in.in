@@ -5,6 +5,8 @@ AllowUsers @VMCONSOLE_USER@
 AuthorizedKeysCommand @libexecdir_POST@/ovirt-vmconsole-proxy-keys
 AuthorizedKeysCommandUser @VMCONSOLE_USER@
 ChallengeResponseAuthentication no
+ClientAliveCountMax 3
+ClientAliveInterval 10
 GSSAPIAuthentication no
 HostCertificate @pkgpkidir_POST@/proxy-ssh_host_rsa-cert.pub
 HostKey @pkgpkidir_POST@/proxy-ssh_host_rsa

@@ -14,5 +14,7 @@ PubkeyAuthentication yes
 RSAAuthentication no
 #RequestTTY yes
 RhostsRSAAuthentication no
+ServerAliveCountMax 3
+ServerAliveInterval 10
 UserKnownHostsFile /dev/null
 HostKeyAlias @OVIRT_VMCONSOLE_HOST_PRINCIPAL@
