@@ -1,3 +1,4 @@
+import errno
 import fcntl
 import os
 import select
@@ -195,7 +196,11 @@ class Proxy(base.Base):
                             from_socket = from_socket[
                                 os.write(x[0], from_socket):
                             ]
-                        except BrokenPipeError:
+                        # TODO: we should use BrokenPipeError once
+                        # we can drop compatibility with python2
+                        except EnvironmentError as e:
+                            if e.errno != errno.EPIPE:
+                                raise
                             stdout_closed = True
                     elif (x[1] & (select.POLLERR | select.POLLHUP)) != 0:
                         self._trace('poll: stdout err')
@@ -208,7 +213,11 @@ class Proxy(base.Base):
                                 to_socket = to_socket[
                                     os.write(x[0], to_socket):
                                 ]
-                            except BrokenPipeError:
+                            # TODO: we should use BrokenPipeError once
+                            # we can drop compatibility with python2
+                            except EnvironmentError as e:
+                                if e.errno != errno.EPIPE:
+                                    raise
                                 socket_closed = True
                         if (x[1] & select.POLLIN) != 0:
                             self._trace('poll: socket read')
