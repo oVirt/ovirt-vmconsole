@@ -21,7 +21,7 @@ class Proxy(base.Base):
 
     def _trace(self, *args):
         if self._dotrace:
-            self.logger.debug(**args)
+            self.logger.debug(*args)
 
     def __init__(
         self,
