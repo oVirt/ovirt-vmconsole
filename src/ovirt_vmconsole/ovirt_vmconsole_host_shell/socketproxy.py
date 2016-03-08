@@ -235,4 +235,21 @@ class Proxy(base.Base):
                             socket_closed = True
 
 
+def _main(socketname):
+    with Proxy(socketname, trace=True) as p:
+        p.run()
+
+
+if __name__ == '__main__':
+    import logging
+
+    logging.basicConfig(filename='socketproxy.log', level=logging.DEBUG)
+
+    if len(sys.argv[1:]) < 1:
+        sys.stderr.write("usage: %s socketname\n" % sys.argv[0])
+        sys.exit(1)
+
+    _main(sys.argv[1])
+
+
 # vim: expandtab tabstop=4 shiftwidth=4
