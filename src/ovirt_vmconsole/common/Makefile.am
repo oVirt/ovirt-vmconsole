@@ -18,6 +18,7 @@ mypythonmodule_PYTHON = \
 	__init__.py \
 	base.py \
 	utils.py \
+	validate.py \
 	$(NULL)
 
 nodist_mypythonmodule_PYTHON = \

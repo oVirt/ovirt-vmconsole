@@ -14,6 +14,7 @@ import time
 from ..common import base
 from ..common import config
 from ..common import utils
+from ..common import validate
 
 
 def _(m):
@@ -86,12 +87,7 @@ class Main(base.Base):
                 entityid=self._args.entityid,
             ),
         )
-        if out.get('content') != 'console_list':
-            raise RuntimeError(_('Invalid console list output'))
-        if out.get('version') != 1:
-            raise RuntimeError(_('Invalid console list version'))
-        out.setdefault('consoles', [])
-        self._consoles = out
+        self._consoles = validate.console_list(out)
 
     def doConnect(self):
 
