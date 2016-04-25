@@ -37,6 +37,7 @@ BuildRequires:	selinux-policy-devel
 Requires:	python
 Requires:	python-argparse
 
+Requires(pre):		shadow-utils
 Requires(post):		policycoreutils-python
 Requires(preun):	policycoreutils
 Requires(postun):	policycoreutils-python
