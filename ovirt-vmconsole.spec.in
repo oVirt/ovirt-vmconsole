@@ -265,5 +265,12 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Tue Apr 26 2016 Francesco Romani <fromani@redhat.com> - 1.0.2-1
+- fix packaging dependencies  on custom base images (oVirt Node)
+
+* Tue Mar 08 2016 Francesco Romani <fromani@redhat.com> - 1.0.1-1
+- ssh: ClientAlive/ServerAlive to expedite connection closure.
+- fix python2/3 compatibility
+
 * Thu Oct 15 2015 Alon Bar-Lev <alonbl@redhat.com> - 1.0.0-1
 - Initial add.
