@@ -12,8 +12,6 @@ SUFFIXES = .in
 
 mypythonmoduledir = $(mypythonlibdir)/common
 
-AM_PYTHON_SYNTAX_CHECK_FILES = $(mypythonmodule_PYTHON)
-
 mypythonmodule_PYTHON = \
 	__init__.py \
 	base.py \
