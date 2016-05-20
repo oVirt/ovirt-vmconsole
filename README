@@ -112,3 +112,39 @@ TEST
 Create a socket s1 to emulate qemu, Ctrl-A to escape.
 
 socat -,raw,echo=0,escape=1 UNIX-LISTEN:/var/run/ovirt-vmconsole-console/s1,user=ovirt-vmconsole
+
+CUSTOMIZATION
+-------------
+
+It could be needed to change the TCP port the serial-console infrastructure uses
+to connect to emulated serial ports.
+This can be done manually, but it is not recommended way since it may easily broken by updates.
+
+1. Override on each virtualization host the default sshd options
+   using the OPTIONS variable at:
+
+    /etc/sysconfig/ovirt-vmconsole-host-sshd
+
+2. On the proxy host, edit
+
+    /etc/sysconfig/ovirt-vmconsole-proxy-sshd
+
+   You can create the file mentioned here and in the above bullet point if missing; check
+   https://www.freedesktop.org/software/systemd/man/systemd.exec.html for further details.
+
+3. On the proxy host, also override the ssh options by dropping a new file in
+   the `/etc/ovirt-vmconsole/ovirt-vmconsole-proxy/conf.d/` directory, like
+
+   /etc/ovirt-vmconsole/ovirt-vmconsole-proxy/conf.d/90-custom-options.conf
+
+Use this option:
+
+   console_attach_ssh_args=""
+
+4. On the proxy host, SELinux should be customized:
+
+  # semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp XXX
+
+5. On each affected virtualization host, SELinux should be customized as well:
+
+  # semanage port -a -t ovirt_vmconsole_host_port_t -p tcp XXX
