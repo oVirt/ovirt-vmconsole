@@ -265,6 +265,9 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Mon May 30 2016 Francesco Romani <fromani@redhat.com> - 1.0.3-1
+- minor socketproxy improvements for easier troubleshooting
+
 * Tue Apr 26 2016 Francesco Romani <fromani@redhat.com> - 1.0.2-1
 - fix packaging dependencies  on custom base images (oVirt Node)
 

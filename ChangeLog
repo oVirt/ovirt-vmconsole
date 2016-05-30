@@ -1,5 +1,11 @@
 ovirt-vmconsole -- secure access to VM serial console
 
+2016-05-30 - Version 1.0.3
+
+Francesco Romani <fromani@redhat.com>
+
+ * socketproxy: minor improvements for easier troubleshooting
+
 2016-04-26 - Version 1.0.2
 
 Francesco Romani <fromani@redhat.com>
