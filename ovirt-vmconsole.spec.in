@@ -111,7 +111,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %post host
-semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
+if [ $1 -eq 1 ] ; then
+	semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
+fi
 fixfiles -R %{name}-host restore
 
 %if %{ovirt_install_systemd}
