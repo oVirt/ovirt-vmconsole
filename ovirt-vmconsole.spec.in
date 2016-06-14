@@ -37,6 +37,10 @@ BuildRequires:	selinux-policy-devel
 Requires:	python
 Requires:	python-argparse
 
+Requires(post):		libselinux-utils
+Requires(preun):	libselinux-utils
+Requires(postun):	libselinux-utils
+
 Requires(pre):		shadow-utils
 Requires(post):		policycoreutils-python
 Requires(preun):	policycoreutils
@@ -50,6 +54,9 @@ Summary:	oVirt VM console host components
 
 Requires:	%{name} = %{version}-%{release}
 Requires:	openssh-server
+
+Requires(post):		libselinux-utils
+Requires(preun):	libselinux-utils
 
 Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
@@ -69,6 +76,9 @@ Summary:	oVirt VM console proxy components
 
 Requires:	%{name} = %{version}-%{release}
 Requires:	openssh-clients
+
+Requires(post):		libselinux-utils
+Requires(preun):	libselinux-utils
 
 Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
@@ -96,25 +106,33 @@ getent passwd %{name} >/dev/null || \
 		%{name}
 
 %post
-semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
-fixfiles -R %{name} restore
+if %{_sbindir}/selinuxenabled ; then
+	semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+	fixfiles -R %{name} restore
+fi
 
 %preun
 if [ $1 -eq 0 ]; then
-	semodule -r ovirt_vmconsole
-	fixfiles -R %{name} restore
+	if %{_sbindir}/selinuxenabled ; then
+		semodule -r ovirt_vmconsole
+		fixfiles -R %{name} restore
+	fi
 fi
 
 %postun
 if [ "$1" -ge "1" ]; then
-	semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+	if %{_sbindir}/selinuxenabled ; then
+		semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+	fi
 fi
 
 %post host
-if [ $1 -eq 1 ] ; then
-	semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
+if %{_sbindir}/selinuxenabled ; then
+	if [ $1 -eq 1 ] ; then
+		semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
+	fi
+	fixfiles -R %{name}-host restore
 fi
-fixfiles -R %{name}-host restore
 
 %if %{ovirt_install_systemd}
 %systemd_post ovirt-vmconsole-host-sshd.service
@@ -125,7 +143,9 @@ chkconfig --add ovirt-vmconsole-host-sshd
 
 %preun host
 if [ $1 -eq 0 ]; then
-	semanage port -d -p tcp 2223 || :
+	if %{_sbindir}/selinuxenabled ; then
+		semanage port -d -p tcp 2223 || :
+	fi
 fi
 
 %if %{ovirt_install_systemd}
@@ -143,8 +163,10 @@ fi
 %endif
 
 %post proxy
-fixfiles -R %{name}-proxy restore
-semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222 || :
+if %{_sbindir}/selinuxenabled ; then
+	fixfiles -R %{name}-proxy restore
+	semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222 || :
+fi
 
 %if %{ovirt_install_systemd}
 %systemd_post ovirt-vmconsole-proxy-sshd.service
@@ -155,7 +177,9 @@ chkconfig --add ovirt-vmconsole-proxy-sshd
 
 %preun proxy
 if [ $1 -eq 0 ]; then
-	semanage port -d -p tcp 2222 || :
+	if %{_sbindir}/selinuxenabled ; then
+		semanage port -d -p tcp 2222 || :
+	fi
 fi
 
 %if %{ovirt_install_systemd}
