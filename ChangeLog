@@ -1,5 +1,14 @@
 ovirt-vmconsole -- secure access to VM serial console
 
+2016-05-30 - Version 1.0.4
+
+Francesco Romani <fromani@redhat.com>
+
+ * packaging: make the package installable/upgradable even with
+              SELinux disabled.
+ * packaging: avoid scary but harmless ValueError on upgrade
+ * docs: document how to change the TCP ports used by this package
+
 2016-05-30 - Version 1.0.3
 
 Francesco Romani <fromani@redhat.com>

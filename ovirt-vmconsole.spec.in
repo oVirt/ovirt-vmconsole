@@ -291,6 +291,12 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Mon Jul 30 2016 Francesco Romani <fromani@redhat.com> - 1.0.4-1
+- packaging: make the package installable/upgradable even with
+             SELinux disabled.
+- packaging: avoid scary but harmless ValueError on upgrade
+- docs: document how to change the TCP ports used by this package
+
 * Mon May 30 2016 Francesco Romani <fromani@redhat.com> - 1.0.3-1
 - minor socketproxy improvements for easier troubleshooting
 
