@@ -1,0 +1,15 @@
+autoconf
+automake
+gettext-devel
+git
+python2-devel
+yum-utils
+checkpolicy
+gettext
+openssh-clients
+openssh-server
+policycoreutils-python
+python-argparse
+selinux-policy-devel
+socat
+systemd
