@@ -35,7 +35,9 @@ BuildRequires:	python2-devel
 BuildRequires:	selinux-policy-devel
 
 Requires:	python
+%if ( 0%{?fedora} && 0%{?fedora} <= 25 ) || 0%{?rhel} == 6
 Requires:	python-argparse
+%endif
 
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
