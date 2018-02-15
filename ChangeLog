@@ -1,5 +1,14 @@
 ovirt-vmconsole -- secure access to VM serial console
 
+2018-02-15 - Version 1.0.5
+
+Francesco Romani <fromani@redhat.com>
+
+ * packaging: ensure selinux-policy-targeted is installed
+ * packaging: remove python-argparse dependency on fc26
+ * licensing: bump copyright year
+ * licensing: add copyright boilerplate
+
 2016-05-30 - Version 1.0.4
 
 Francesco Romani <fromani@redhat.com>

@@ -294,6 +294,12 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Thu Feb 15 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-1
+- packaging: ensure selinux-policy-targeted is installed
+- packaging: remove python-argparse dependency on fc26
+- licensing: bump copyright year
+- licensing: add copyright boilerplate
+
 * Mon Jul 30 2016 Francesco Romani <fromani@redhat.com> - 1.0.4-1
 - packaging: make the package installable/upgradable even with
              SELinux disabled.
