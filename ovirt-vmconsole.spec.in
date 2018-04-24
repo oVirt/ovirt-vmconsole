@@ -294,6 +294,9 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Tue Apr 24 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-2
+- build: update and fix build automation and infrastructure
+
 * Thu Feb 15 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-1
 - packaging: ensure selinux-policy-targeted is installed
 - packaging: remove python-argparse dependency on fc26
