@@ -35,9 +35,6 @@ BuildRequires:	python2-devel
 BuildRequires:	selinux-policy-devel
 
 Requires:	python
-%if ( 0%{?fedora} && 0%{?fedora} <= 25 ) || 0%{?rhel} == 6
-Requires:	python-argparse
-%endif
 Requires:	selinux-policy-targeted
 
 Requires(post):		libselinux-utils
@@ -294,6 +291,9 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Tue Apr 24 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-4
+- build: packaging: fix dependecies
+
 * Tue Apr 24 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-2
 - build: update and fix build automation and infrastructure
 
