@@ -158,6 +158,15 @@ class Main(base.Base):
                     vmid=e['vmid'],
                     vm=e['vm'],
                 )
+            menu += (
+                '\n'
+                'Please, enter the id of the Serial Console '
+                'you want to connect to.'
+                '\n'
+                'To disconnect from a Serial Console, enter '
+                'the sequence: <Enter><~><.>'
+                '\n'
+            )
             menu += 'SELECT> '
 
             while not entry:
