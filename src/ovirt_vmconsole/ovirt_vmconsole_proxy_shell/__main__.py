@@ -41,14 +41,6 @@ def _(m):
     return gettext.dgettext(message=m, domain='ovirt-vmconsole')
 
 
-class UserVisibleRuntimeError(RuntimeError):
-    pass
-
-
-class UserExit(RuntimeError):
-    pass
-
-
 class Main(base.Base):
 
     NAME = 'ovirt-vmconsole-proxy-shell'
@@ -114,7 +106,7 @@ class Main(base.Base):
         try:
             termios.tcgetattr(sys.stdin.fileno())
         except:
-            raise UserVisibleRuntimeError(
+            raise utils.UserVisibleRuntimeError(
                 _('No pty support, please enable at client side')
             )
 
@@ -126,7 +118,7 @@ class Main(base.Base):
                     entry = e
                     break
             else:
-                raise UserVisibleRuntimeError(
+                raise utils.UserVisibleRuntimeError(
                     _("VM with id '{vmid}' is unavailable").format(
                         vmid=self._userargs.vm_id,
                     )
@@ -137,13 +129,13 @@ class Main(base.Base):
                     entry = e
                     break
             else:
-                raise UserVisibleRuntimeError(
+                raise utils.UserVisibleRuntimeError(
                     _("VM with name '{vm}' is unavailable").format(
                         vm=self._userargs.vm_name,
                     )
                 )
         elif len(consoles) == 0:
-            raise UserVisibleRuntimeError(
+            raise utils.UserVisibleRuntimeError(
                 _("No available running VMs")
             )
         elif len(consoles) == 1:
@@ -152,40 +144,8 @@ class Main(base.Base):
             menu = self._config.get('proxy', 'console_menu_title')
             if not menu:
                 menu = _('Available Serial Consoles:\n')
-            for i, e in enumerate(consoles):
-                menu += '{index:02} {vm}[{vmid}]\n'.format(
-                    index=i,
-                    vmid=e['vmid'],
-                    vm=e['vm'],
-                )
-            menu += (
-                '\n'
-                'Please, enter the id of the Serial Console '
-                'you want to connect to.'
-                '\n'
-                'To disconnect from a Serial Console, enter '
-                'the sequence: <Enter><~><.>'
-                '\n'
-            )
-            menu += 'SELECT> '
 
-            while not entry:
-                sys.stdout.write(menu)
-                sys.stdout.flush()
-                l = sys.stdin.readline()
-                if not l:
-                    raise UserVisibleRuntimeError('EOF')
-                l = l.rstrip('\r\n')
-                if l == 'exit':
-                    raise UserExit()
-                try:
-                    i = int(l)
-                    if i < 0 or i >= len(consoles):
-                        sys.stderr.write(_('Invalid selection\n'))
-                    else:
-                        entry = consoles[i]
-                except ValueError:
-                    sys.stderr.write(_('Invalid selection\n'))
+            entry = utils.selectConsole(menu, consoles)
 
         self.logger.debug('Reading CA key')
         with open(os.path.join(config.pkgpkidir, 'ca.pub')) as f:
@@ -434,9 +394,9 @@ class Main(base.Base):
             self._args.func()
             self._userargs.func()
             ret = 0
-        except (UserExit, KeyboardInterrupt):
+        except (utils.UserExit, KeyboardInterrupt):
             pass
-        except UserVisibleRuntimeError as e:
+        except utils.UserVisibleRuntimeError as e:
             self.logger.error('%s', str(e))
             self.logger.debug('Exception', exc_info=True)
             sys.stderr.write(_('ERROR: {error}\n').format(error=e))

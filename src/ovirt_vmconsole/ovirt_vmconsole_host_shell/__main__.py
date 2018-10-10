@@ -38,10 +38,6 @@ def _(m):
     return gettext.dgettext(message=m, domain='ovirt-vmconsole')
 
 
-class UserVisibleRuntimeError(RuntimeError):
-    pass
-
-
 class Main(base.Base):
 
     NAME = 'ovirt-vmconsole-host-shell'
@@ -95,12 +91,12 @@ class Main(base.Base):
         try:
             termios.tcgetattr(sys.stdin.fileno())
         except:
-            raise UserVisibleRuntimeError(
+            raise utils.UserVisibleRuntimeError(
                 _('No pty support, please enable at client side')
             )
 
         if os.path.basename(self._args.console) != self._args.console:
-            raise UserVisibleRuntimeError(
+            raise utils.UserVisibleRuntimeError(
                 _('Invalid console name')
             )
 
@@ -115,7 +111,7 @@ class Main(base.Base):
             self.logger.debug('exists')
 
         if not os.access(socket, os.F_OK | os.R_OK | os.W_OK):
-            raise UserVisibleRuntimeError(
+            raise utils.UserVisibleRuntimeError(
                 _("Console '{console}' is not available").format(
                     console=self._args.console,
                 )
@@ -236,7 +232,7 @@ class Main(base.Base):
             self.validations()
             self._args.func()
             ret = 0
-        except UserVisibleRuntimeError as e:
+        except utils.UserVisibleRuntimeError as e:
             self.logger.error('%s', str(e))
             self.logger.debug('Exception', exc_info=True)
             sys.stderr.write(_('ERROR: {error}\n').format(error=e))

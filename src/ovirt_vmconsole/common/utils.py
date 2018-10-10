@@ -32,8 +32,57 @@ import sys
 from . import base
 
 
+class UserVisibleRuntimeError(RuntimeError):
+    pass
+
+
+class UserExit(RuntimeError):
+    pass
+
+
 def _(m):
     return gettext.dgettext(message=m, domain='ovirt-vmconsole')
+
+
+def selectConsole(menu, consoles):
+    for i, e in enumerate(consoles):
+        menu += '{index:02} {vm}[{vmid}]\n'.format(
+            index=i,
+            vmid=e['vmid'],
+            vm=e['vm'],
+        )
+
+    menu += (
+        '\n'
+        'Please, enter the id of the Serial Console '
+        'you want to connect to.'
+        '\n'
+        'To disconnect from a Serial Console, enter '
+        'the sequence: <Enter><~><.>'
+        '\n'
+    )
+    menu += 'SELECT> '
+
+    entry = None
+    while not entry:
+        sys.stdout.write(menu)
+        sys.stdout.flush()
+        l = sys.stdin.readline()
+        if not l:
+            raise UserVisibleRuntimeError('EOF')
+        l = l.rstrip('\r\n')
+        if l == 'exit':
+            raise UserExit()
+        try:
+            i = int(l)
+            if i < 0 or i >= len(consoles):
+                sys.stderr.write(_('Invalid selection\n'))
+            else:
+                entry = consoles[i]
+        except ValueError:
+            sys.stderr.write(_('Invalid selection\n'))
+
+    return entry
 
 
 def setupLogger(processName=None):
