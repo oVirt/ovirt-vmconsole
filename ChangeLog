@@ -1,5 +1,12 @@
 ovirt-vmconsole -- secure access to VM serial console
 
+2018-10-11 - Version 1.0.6
+
+Francesco Romani <fromani@redhat.com>
+
+* docs/proxy: guide users about how to disconnect
+* deps: don't depend on python-argparse anymore
+
 2018-02-15 - Version 1.0.5
 
 Francesco Romani <fromani@redhat.com>

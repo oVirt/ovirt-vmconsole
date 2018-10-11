@@ -291,6 +291,10 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Tue Oct 11 2018 Francesco Romani <fromani@redhat.com> - 1.0.6-1
+- docs/proxy: guide users about how to disconnect
+- deps: don't depend on python-argparse anymore
+
 * Tue Apr 24 2018 Francesco Romani <fromani@redhat.com> - 1.0.5-4
 - build: packaging: fix dependecies
 
