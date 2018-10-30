@@ -16,6 +16,19 @@
 %endif
 %endif
 
+%if 0%{?fedora} || 0%{?rhel} > 7
+%global with_python3 1
+%global __python %{__python3}
+%else
+%global with_python3 0
+%endif
+
+%if 0%{?rhel} > 7
+%global with_python2 0
+%else
+%global with_python2 1
+%endif
+
 Summary:	oVirt VM console
 Name:		@PACKAGE_NAME@
 Version:	@PACKAGE_RPM_VERSION@
@@ -31,10 +44,17 @@ BuildRequires:	checkpolicy
 BuildRequires:	gettext
 BuildRequires:	openssh-clients
 BuildRequires:	openssh-server
-BuildRequires:	python2-devel
 BuildRequires:	selinux-policy-devel
 
+%if 0%{?with_python2}
+BuildRequires:	python2-devel
 Requires:	python
+%endif
+%if 0%{?with_python3}
+BuildRequires:	python3-devel
+Requires:	python3
+%endif
+
 Requires:	selinux-policy-targeted
 
 Requires(post):		libselinux-utils
@@ -42,9 +62,15 @@ Requires(preun):	libselinux-utils
 Requires(postun):	libselinux-utils
 
 Requires(pre):		shadow-utils
-Requires(post):		policycoreutils-python
 Requires(preun):	policycoreutils
+%if 0%{?with_python2}
+Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
+%endif
+%if 0%{?with_python3}
+Requires(post):		policycoreutils-python3
+Requires(postun):	policycoreutils-python3
+%endif
 
 %description
 oVirt VM console proxy
@@ -58,8 +84,14 @@ Requires:	openssh-server
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
 
+%if 0%{?with_python2}
 Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
+%endif
+%if 0%{?with_python3}
+Requires(post):		policycoreutils-python3
+Requires(postun):	policycoreutils-python3
+%endif
 
 %if %{ovirt_install_systemd}
 BuildRequires:		systemd
@@ -80,8 +112,14 @@ Requires:	openssh-clients
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
 
+%if 0%{?with_python2}
 Requires(post):		policycoreutils-python
 Requires(postun):	policycoreutils-python
+%endif
+%if 0%{?with_python3}
+Requires(post):		policycoreutils-python3
+Requires(postun):	policycoreutils-python3
+%endif
 
 %if %{ovirt_install_systemd}
 BuildRequires:		systemd
@@ -251,6 +289,7 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %dir %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %dir %{python_sitelib}/ovirt_vmconsole
+%exclude %{python_sitelib}/ovirt_vmconsole/__pycache__/*
 %{_datadir}/%{name}/empty/
 %{_datadir}/selinux/packages/%{name}/
 %{_docdir}/%{name}/
@@ -291,6 +330,9 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %endif
 
 %changelog
+* Mon Oct 29 2018 Tomasz Baranski <tbaransk@redhat.com> - 1.0.6-2
+- fix packaging for Python2/3
+
 * Tue Oct 11 2018 Francesco Romani <fromani@redhat.com> - 1.0.6-1
 - docs/proxy: guide users about how to disconnect
 - deps: don't depend on python-argparse anymore
