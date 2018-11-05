@@ -1,5 +1,7 @@
-%global		package_version @PACKAGE_VERSION@
-%global		package_maven_version @PACKAGE_MAVEN_VERSION@
+%global package_version @PACKAGE_VERSION@
+%global package_maven_version @PACKAGE_MAVEN_VERSION@
+
+%global default_python_ver %(%{__python} -c "from sys import version_info; print(version_info[0])")
 
 %if 0%{?fedora}
 %global ovirt_install_systemd 1
@@ -16,18 +18,15 @@
 %endif
 %endif
 
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?default_python_ver} > 2
 %global with_python3 1
 %global __python %{__python3}
-%else
-%global with_python3 0
-%endif
-
-%if 0%{?rhel} > 7
 %global with_python2 0
 %else
+%global with_python3 0
 %global with_python2 1
 %endif
+
 
 Summary:	oVirt VM console
 Name:		@PACKAGE_NAME@
@@ -288,14 +287,22 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %files
 %dir %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
+%if 0%{?with_python2}
 %dir %{python_sitelib}/ovirt_vmconsole
+%{python_sitelib}/ovirt_vmconsole/__init__.py*
+%{python_sitelib}/ovirt_vmconsole/common/
 %exclude %{python_sitelib}/ovirt_vmconsole/__pycache__/*
+%endif
+%if 0%{?with_python3}
+%dir %{python3_sitelib}/ovirt_vmconsole
+%{python3_sitelib}/ovirt_vmconsole/__init__.py*
+%{python3_sitelib}/ovirt_vmconsole/common/
+%exclude %{python3_sitelib}/ovirt_vmconsole/__pycache__/*
+%endif
 %{_datadir}/%{name}/empty/
 %{_datadir}/selinux/packages/%{name}/
 %{_docdir}/%{name}/
 %{_sysconfdir}/pki/%{name}/
-%{python_sitelib}/ovirt_vmconsole/__init__.py*
-%{python_sitelib}/ovirt_vmconsole/common/
 
 %if 0%{?rhel}
 %if 0%{?rhel} < 7
