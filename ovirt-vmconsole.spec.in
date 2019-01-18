@@ -159,7 +159,7 @@ fi
 %postun
 if [ "$1" -ge "1" ]; then
 	if %{_sbindir}/selinuxenabled ; then
-		semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
+		semodule -r "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
 	fi
 fi
 
