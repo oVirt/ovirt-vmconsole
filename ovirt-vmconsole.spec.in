@@ -1,22 +1,11 @@
 %global package_version @PACKAGE_VERSION@
 %global package_maven_version @PACKAGE_MAVEN_VERSION@
 
+%global selinuxtype targeted
+%global moduletype contrib
+%global modulename ovirt_vmconsole
+
 %global default_python_ver %(%{__python} -c "from sys import version_info; print(version_info[0])")
-
-%if 0%{?fedora}
-%global ovirt_install_systemd 1
-%global ovirt_install_systemv 0
-%endif
-
-%if 0%{?rhel}
-%if 0%{?rhel} >= 7
-%global ovirt_install_systemd 1
-%global ovirt_install_systemv 0
-%else
-%global ovirt_install_systemd 0
-%global ovirt_install_systemv 1
-%endif
-%endif
 
 %if 0%{?default_python_ver} > 2
 %global with_python3 1
@@ -37,13 +26,15 @@ URL:		http://www.ovirt.org
 Source:		http://resources.ovirt.org/pub/src/%{name}/%{name}-%{package_version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch:	noarch
 
 BuildRequires:	checkpolicy
 BuildRequires:	gettext
 BuildRequires:	openssh-clients
 BuildRequires:	openssh-server
 BuildRequires:	selinux-policy-devel
+BuildRequires:  selinux-policy
+BuildArch:	noarch
+%{?selinux_requires}
 
 %if 0%{?with_python2}
 BuildRequires:	python2-devel
@@ -53,8 +44,6 @@ Requires:	python
 BuildRequires:	python3-devel
 Requires:	python3
 %endif
-
-Requires:	selinux-policy-targeted
 
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
@@ -92,12 +81,10 @@ Requires(post):		policycoreutils-python3
 Requires(postun):	policycoreutils-python3
 %endif
 
-%if %{ovirt_install_systemd}
 BuildRequires:		systemd
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 %description host
 oVirt VM console host components
@@ -120,12 +107,10 @@ Requires(post):		policycoreutils-python3
 Requires(postun):	policycoreutils-python3
 %endif
 
-%if %{ovirt_install_systemd}
 BuildRequires:		systemd
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 %description proxy
 oVirt VM console proxy components
@@ -141,108 +126,76 @@ getent passwd %{name} >/dev/null || \
 		-s /bin/sh \
 		-d %{_datadir}/%{name}/empty \
 		%{name}
+%selinux_relabel_pre -s %{selinuxtype}
 
+# [policy-priority]
+# keep priority (-P) consistent between install and uninstall to avoid silent failure for removal on %postun
+# 400 is just the old default, no reason to change it.
 %post
-if %{_sbindir}/selinuxenabled ; then
-	semodule -i "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
-	fixfiles -R %{name} restore
-fi
+%selinux_modules_install -s %{selinuxtype} -p 400 %{_datadir}/selinux/packages/ovirt-vmconsole/%{modulename}.pp
 
-%preun
-if [ $1 -eq 0 ]; then
-	if %{_sbindir}/selinuxenabled ; then
-		semodule -r ovirt_vmconsole
-		fixfiles -R %{name} restore
-	fi
-fi
-
+# per https://fedoraproject.org/wiki/Packaging:Scriptlets#Syntax
+# this happens on uninstall - recommended by
+# https://fedoraproject.org/wiki/PackagingDrafts/SELinux_Independent_Policy#The_.25post_Section
 %postun
-if [ "$1" -ge "1" ]; then
-	if %{_sbindir}/selinuxenabled ; then
-		semodule -r "%{_datadir}/selinux/packages/%{name}/ovirt_vmconsole.pp"
-	fi
+if [ $1 -eq 0 ]; then
+    # see [policy-priority]
+    %selinux_modules_uninstall -s %{selinuxtype} -p 400 %{modulename}
 fi
 
+# [ordering]
+# see https://fedoraproject.org/wiki/Packaging:Scriptlets#Ordering
+%posttrans
+%selinux_relabel_post -s %{selinuxtype}
+
+# [ignore-errors]
+# see https://fedoraproject.org/wiki/PackagingDrafts/SELinux_Independent_Policy#Port_Labeling
+#
+# per https://fedoraproject.org/wiki/Packaging:Scriptlets#Syntax it seems that it is preferred
+# to hide and swallow non-zero exit codes in the scriptlets. Let it be.
 %post host
 if %{_sbindir}/selinuxenabled ; then
-	if [ $1 -eq 1 ] ; then
-		semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 || :
-	fi
-	fixfiles -R %{name}-host restore
+	semanage port -a -t ovirt_vmconsole_host_port_t -p tcp 2223 &> /dev/null || :
 fi
-
-%if %{ovirt_install_systemd}
 %systemd_post ovirt-vmconsole-host-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-chkconfig --add ovirt-vmconsole-host-sshd
-%endif
+
+# see [ignore-errors]
+%postun host
+if %{_sbindir}/selinuxenabled ; then
+	semanage port -d -p tcp 2223 &> /dev/null || :
+fi
+%systemd_postun ovirt-vmconsole-host-sshd.service
+
+# see [ordering]
+%posttrans host
+%selinux_relabel_post -s %{selinuxtype}
 
 %preun host
-if [ $1 -eq 0 ]; then
-	if %{_sbindir}/selinuxenabled ; then
-		semanage port -d -p tcp 2223 || :
-	fi
-fi
-
-%if %{ovirt_install_systemd}
 %systemd_preun ovirt-vmconsole-host-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-if [ $1 -eq 0 ]; then
-	service ovirt-vmconsole-host-sshd stop > /dev/null 2>&1 || :
-	chkconfig --del ovirt-vmconsole-host-sshd
-fi
-%endif
 
-%if %{ovirt_install_systemd}
-%systemd_postun ovirt-vmconsole-host-sshd.service
-%endif
-
+# see [ignore-errors]
 %post proxy
 if %{_sbindir}/selinuxenabled ; then
-	fixfiles -R %{name}-proxy restore
-	semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222 || :
+	semanage port -a -t ovirt_vmconsole_proxy_port_t -p tcp 2222 &> /dev/null || :
 fi
-
-%if %{ovirt_install_systemd}
 %systemd_post ovirt-vmconsole-proxy-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-chkconfig --add ovirt-vmconsole-proxy-sshd
-%endif
+
+# see [ignore-errors]
+%postun proxy
+if %{_sbindir}/selinuxenabled ; then
+	semanage port -d -p tcp 2222 &> /dev/null || :
+fi
+%systemd_postun ovirt-vmconsole-proxy-sshd.service
+
+# see [ordering]
+%posttrans proxy
+%selinux_relabel_post -s %{selinuxtype}
 
 %preun proxy
-if [ $1 -eq 0 ]; then
-	if %{_sbindir}/selinuxenabled ; then
-		semanage port -d -p tcp 2222 || :
-	fi
-fi
-
-%if %{ovirt_install_systemd}
 %systemd_preun ovirt-vmconsole-proxy-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-if [ $1 -eq 0 ]; then
-	service ovirt-vmconsole-proxy-sshd stop > /dev/null 2>&1 || :
-	chkconfig --del ovirt-vmconsole-proxy-sshd
-fi
-%endif
-
-%if %{ovirt_install_systemd}
-%systemd_postun ovirt-vmconsole-proxy-sshd.service
-%endif
 
 %prep
 %setup -q -n %{name}-%{package_version}
-%if 0%{?rhel}
-%if 0%{?rhel} < 7
-sed -i '/AuthorizedKeysCommandUser/d' ./src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/sshd_config.in.in
-sed -i \
-	-e '/defined_port_type/d' \
-	selinux-ovirt_vmconsole/ovirt_vmconsole.te
-%endif
-%endif
 
 %build
 %configure \
@@ -254,8 +207,9 @@ make -f /usr/share/selinux/devel/Makefile -C selinux-ovirt_vmconsole
 %install
 rm -rf "%{buildroot}"
 make %{?_smp_mflags} install DESTDIR="%{buildroot}"
-install -dm 755 "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
-install -m 644 selinux-ovirt_vmconsole/ovirt_vmconsole.pp "%{buildroot}/%{_datadir}/selinux/packages/%{name}"
+# install policy modules
+install -d %{buildroot}%{_datadir}/selinux/packages/ovirt-vmconsole
+install -m 0644 selinux-ovirt_vmconsole/%{modulename}.pp %{buildroot}%{_datadir}/selinux/packages/ovirt-vmconsole
 
 #
 # workaround rpmlint warnings
@@ -265,24 +219,9 @@ find "%{buildroot}" -name .keep -exec rm {} \;
 #
 # Register services
 #
-%if %{ovirt_install_systemd}
 install -dm 755 "%{buildroot}%{_unitdir}"
 install -m 644 "src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/ovirt-vmconsole-host-sshd.systemd" "%{buildroot}%{_unitdir}/ovirt-vmconsole-host-sshd.service"
 install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmconsole-proxy-sshd.systemd" "%{buildroot}%{_unitdir}/ovirt-vmconsole-proxy-sshd.service"
-%endif
-
-%if %{ovirt_install_systemv}
-install -dm 755 "%{buildroot}%{_initddir}"
-install -m 755 "src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/ovirt-vmconsole-host-sshd.sysv" "%{buildroot}%{_initddir}/ovirt-vmconsole-host-sshd"
-install -m 755 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmconsole-proxy-sshd.sysv" "%{buildroot}%{_initddir}/ovirt-vmconsole-proxy-sshd"
-%endif
-
-%if 0%{?rhel}
-%if 0%{?rhel} < 7
-# old ssh tries to unconditionally create ~/.ssh
-install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
-%endif
-%endif
 
 %files
 %dir %{_datadir}/%{name}
@@ -291,7 +230,6 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %dir %{python_sitelib}/ovirt_vmconsole
 %{python_sitelib}/ovirt_vmconsole/__init__.py*
 %{python_sitelib}/ovirt_vmconsole/common/
-%exclude %{python_sitelib}/ovirt_vmconsole/__pycache__/*
 %endif
 %if 0%{?with_python3}
 %dir %{python3_sitelib}/ovirt_vmconsole
@@ -299,48 +237,29 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 %{python3_sitelib}/ovirt_vmconsole/common/
 %exclude %{python3_sitelib}/ovirt_vmconsole/__pycache__/*
 %endif
-%{_datadir}/%{name}/empty/
-%{_datadir}/selinux/packages/%{name}/
+%{_datadir}/selinux/packages/ovirt-vmconsole/%{modulename}.pp
 %{_docdir}/%{name}/
 %{_sysconfdir}/pki/%{name}/
-
-%if 0%{?rhel}
-%if 0%{?rhel} < 7
-%dir %attr(-, %{name}, %{name}) %{_datadir}/%{name}/empty/.ssh
-%endif
-%endif
 
 %files host
 %{_datadir}/%{name}/ovirt-vmconsole-host/
 %{_libexecdir}/ovirt-vmconsole-host-*
 %{_sysconfdir}/%{name}/ovirt-vmconsole-host/
 %{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_host_*/
-
-%if %{ovirt_install_systemd}
 %{_unitdir}/ovirt-vmconsole-host-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-%{_initddir}/ovirt-vmconsole-host-sshd
-%endif
 
 %files proxy
 %{_datadir}/%{name}/ovirt-vmconsole-proxy/
 %{_libexecdir}/ovirt-vmconsole-proxy-*
 %{_sysconfdir}/%{name}/ovirt-vmconsole-proxy/
 %{python_sitelib}/ovirt_vmconsole/ovirt_vmconsole_proxy_*/
-
-%if %{ovirt_install_systemd}
 %{_unitdir}/ovirt-vmconsole-proxy-sshd.service
-%endif
-%if %{ovirt_install_systemv}
-%{_initddir}/ovirt-vmconsole-proxy-sshd
-%endif
 
 %changelog
 * Mon Oct 29 2018 Tomasz Baranski <tbaransk@redhat.com> - 1.0.6-2
 - fix packaging for Python2/3
 
-* Tue Oct 11 2018 Francesco Romani <fromani@redhat.com> - 1.0.6-1
+* Thu Oct 11 2018 Francesco Romani <fromani@redhat.com> - 1.0.6-1
 - docs/proxy: guide users about how to disconnect
 - deps: don't depend on python-argparse anymore
 
@@ -356,7 +275,7 @@ install -dm 700 "%{buildroot}%{_datadir}/%{name}/empty/.ssh"
 - licensing: bump copyright year
 - licensing: add copyright boilerplate
 
-* Mon Jul 30 2016 Francesco Romani <fromani@redhat.com> - 1.0.4-1
+* Fri Jul 29 2016 Francesco Romani <fromani@redhat.com> - 1.0.4-1
 - packaging: make the package installable/upgradable even with
              SELinux disabled.
 - packaging: avoid scary but harmless ValueError on upgrade
