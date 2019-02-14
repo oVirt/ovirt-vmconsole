@@ -1,5 +1,4 @@
 %global package_version @PACKAGE_VERSION@
-%global package_maven_version @PACKAGE_MAVEN_VERSION@
 
 %global selinuxtype targeted
 %global moduletype contrib
