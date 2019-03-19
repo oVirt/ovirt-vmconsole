@@ -231,6 +231,7 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %files
 %dir %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
+%dir %{_datadir}/%{name}/empty
 %if 0%{?with_python2}
 %dir %{python_sitelib}/ovirt_vmconsole
 %{python_sitelib}/ovirt_vmconsole/__init__.py*
