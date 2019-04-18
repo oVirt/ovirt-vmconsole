@@ -4,7 +4,13 @@
 %global moduletype contrib
 %global modulename ovirt_vmconsole
 
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8
+# In newest Fedora and RHEL python executable doesn't exist anymore and can't
+# be used for guessing
+%global default_python_ver 3
+%else
 %global default_python_ver %(%{__python} -c "from sys import version_info; print(version_info[0])")
+%endif
 
 %if 0%{?default_python_ver} > 2
 %global with_python3 1
