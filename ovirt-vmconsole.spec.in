@@ -33,6 +33,7 @@ Source:		http://resources.ovirt.org/pub/src/%{name}/%{name}-%{package_version}.t
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	checkpolicy
+BuildRequires:	gcc
 BuildRequires:	gettext
 BuildRequires:	openssh-clients
 BuildRequires:	openssh-server

@@ -1,6 +1,7 @@
 autoconf
 automake
 checkpolicy
+gcc
 gettext
 gettext-devel
 git
