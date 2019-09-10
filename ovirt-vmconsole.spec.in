@@ -263,6 +263,9 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %{_unitdir}/ovirt-vmconsole-proxy-sshd.service
 
 %changelog
+* Tue Sep 10 2019 Michal Skrivanek <michal.skrivanek@redhat.com> - 1.0.7-3
+- move automation to stdci v2 jobs
+
 * Mon Oct 29 2018 Tomasz Baranski <tbaransk@redhat.com> - 1.0.6-2
 - fix packaging for Python2/3
 
