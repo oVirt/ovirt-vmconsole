@@ -11,9 +11,7 @@ PermitLocalCommand no
 PermitLocalCommand no
 Port @OVIRT_VMCONSOLE_HOST_SSHD_PORT@
 PubkeyAuthentication yes
-RSAAuthentication no
 #RequestTTY yes
-RhostsRSAAuthentication no
 ServerAliveCountMax 3
 ServerAliveInterval 10
 UserKnownHostsFile /dev/null

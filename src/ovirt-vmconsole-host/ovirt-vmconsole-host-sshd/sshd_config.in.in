@@ -20,6 +20,5 @@ PidFile /dev/null
 Port @OVIRT_VMCONSOLE_HOST_SSHD_PORT@
 Protocol 2
 PubkeyAuthentication yes
-RSAAuthentication no
 TrustedUserCAKeys @pkgpkidir_POST@/ca.pub
 X11Forwarding no
