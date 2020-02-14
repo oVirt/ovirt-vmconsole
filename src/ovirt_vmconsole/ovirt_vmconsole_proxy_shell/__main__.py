@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2017 Red Hat, Inc.
+# Copyright 2016-2020 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ class Main(base.Base):
 
         self.logger.debug('Reading CA key')
         with open(os.path.join(config.pkgpkidir, 'ca.pub')) as f:
-            cakey = f.read().decode('utf-8').rstrip('\n')
+            cakey = f.read().rstrip('\n')
 
         self.logger.debug('Creating known_hosts')
         fd, known_hosts = tempfile.mkstemp()
