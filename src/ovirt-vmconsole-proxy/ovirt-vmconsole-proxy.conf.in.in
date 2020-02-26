@@ -58,7 +58,7 @@ ovirt_vmconsole_host_principal = @OVIRT_VMCONSOLE_HOST_PRINCIPAL@
 console_attach_ssh_args =
 console_attach_extra_args =
 console_attach_command = --entityid="{entityid}" --entity="{entity}" %(console_attach_extra_args)s connect --console="{console}"
-console_attach = exec "%(ssh)s" -t -F "@pkgproxydatadir_POST@/ssh_config" -o GlobalKnownHostsFile="{known_hosts_file}" %(console_attach_ssh_args)s "%(ovirt_vmconsole_host_user)s@{host}" -- %(console_attach_command)s
+console_attach = exec "%(ssh)s" -t -F "@pkgproxydatadir_POST@/ssh_config" -o HostKeyAlias="{host}" -o GlobalKnownHostsFile="{known_hosts_file}" %(console_attach_ssh_args)s "%(ovirt_vmconsole_host_user)s@{host}" -- %(console_attach_command)s
 
 #
 # authorized_keys key prefix.
