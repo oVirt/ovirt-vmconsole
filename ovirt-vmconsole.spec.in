@@ -263,6 +263,9 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %{_unitdir}/ovirt-vmconsole-proxy-sshd.service
 
 %changelog
+* Thu Feb 27 2020 Milan Zamazal <mzamazal@redhat.com> - 1.0.8-1
+- el8 related fixes
+
 * Tue Sep 10 2019 Michal Skrivanek <michal.skrivanek@redhat.com> - 1.0.7-3
 - move automation to stdci v2 jobs
 
