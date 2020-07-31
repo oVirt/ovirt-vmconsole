@@ -1,4 +1,4 @@
-policy_module(ovirt_vmconsole, 1.0.1)
+policy_module(ovirt_vmconsole, 1.0.9)
 
 ########################################
 #
@@ -9,9 +9,12 @@ require {
 	attribute defined_port_type;
 	attribute port_type;
 	attribute ssh_server;
+        class fifo_file { write };
+        class process { dyntransition };
 	class tcp_socket { name_bind };
 	type sshd_exec_t;
 	type sshd_key_t;
+	type sshd_net_t;
 	type sshd_t;
 };
 
@@ -86,3 +89,11 @@ corenet_tcp_sendrecv_generic_node(ovirt_vmconsole_t)
 corenet_tcp_sendrecv_all_ports(ovirt_vmconsole_t)
 corenet_tcp_connect_all_ports(ovirt_vmconsole_t)
 corenet_all_recvfrom_unlabeled(ovirt_vmconsole_t)
+
+# Permit sshd_net_t related actions: https://bugzilla.redhat.com/1834876
+allow ovirt_vmconsole_t sshd_net_t:process dyntransition;
+allow sshd_net_t ovirt_vmconsole_t:fifo_file write;
+allow sshd_net_t ovirt_vmconsole_t:tcp_socket read;
+allow sshd_net_t ovirt_vmconsole_t:tcp_socket write;
+allow sshd_net_t ovirt_vmconsole_t:unix_stream_socket read;
+allow sshd_net_t ovirt_vmconsole_t:unix_stream_socket write;
