@@ -263,6 +263,9 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %{_unitdir}/ovirt-vmconsole-proxy-sshd.service
 
 %changelog
+* Thu Nov 26 2020 Milan Zamazal <mzamazal@redhat.com> - 1.0.9-1
+- fix SELinux denials present in logs
+
 * Thu Feb 27 2020 Milan Zamazal <mzamazal@redhat.com> - 1.0.8-1
 - el8 related fixes
 
