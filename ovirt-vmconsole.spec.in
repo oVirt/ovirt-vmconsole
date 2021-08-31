@@ -4,31 +4,15 @@
 %global moduletype contrib
 %global modulename ovirt_vmconsole
 
-%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8
-# In newest Fedora and RHEL python executable doesn't exist anymore and can't
-# be used for guessing
-%global default_python_ver 3
-%else
-%global default_python_ver %(%{__python} -c "from sys import version_info; print(version_info[0])")
-%endif
-
-%if 0%{?default_python_ver} > 2
-%global with_python3 1
 %global __python %{__python3}
-%global with_python2 0
-%else
-%global with_python3 0
-%global with_python2 1
-%endif
-
 
 Summary:	oVirt VM console
 Name:		@PACKAGE_NAME@
 Version:	@PACKAGE_RPM_VERSION@
 Release:	@PACKAGE_RPM_RELEASE@%{?release_suffix}%{?dist}
 License:	GPLv3
-URL:		http://www.ovirt.org
-Source:		http://resources.ovirt.org/pub/src/%{name}/%{name}-%{package_version}.tar.gz
+URL:		https://www.ovirt.org
+Source:		https://resources.ovirt.org/pub/src/%{name}/%{name}-%{package_version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -42,14 +26,8 @@ BuildRequires:  selinux-policy
 BuildArch:	noarch
 %{?selinux_requires}
 
-%if 0%{?with_python2}
-BuildRequires:	python2-devel
-Requires:	python
-%endif
-%if 0%{?with_python3}
 BuildRequires:	python3-devel
 Requires:	python3
-%endif
 
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
@@ -57,14 +35,8 @@ Requires(postun):	libselinux-utils
 
 Requires(pre):		shadow-utils
 Requires(preun):	policycoreutils
-%if 0%{?with_python2}
-Requires(post):		policycoreutils-python
-Requires(postun):	policycoreutils-python
-%endif
-%if 0%{?with_python3}
 Requires(post):		policycoreutils-python3
 Requires(postun):	policycoreutils-python3
-%endif
 
 %description
 oVirt VM console proxy
@@ -78,14 +50,8 @@ Requires:	openssh-server
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
 
-%if 0%{?with_python2}
-Requires(post):		policycoreutils-python
-Requires(postun):	policycoreutils-python
-%endif
-%if 0%{?with_python3}
 Requires(post):		policycoreutils-python3
 Requires(postun):	policycoreutils-python3
-%endif
 
 BuildRequires:		systemd
 Requires(post):		systemd
@@ -104,14 +70,8 @@ Requires:	openssh-clients
 Requires(post):		libselinux-utils
 Requires(preun):	libselinux-utils
 
-%if 0%{?with_python2}
-Requires(post):		policycoreutils-python
-Requires(postun):	policycoreutils-python
-%endif
-%if 0%{?with_python3}
 Requires(post):		policycoreutils-python3
 Requires(postun):	policycoreutils-python3
-%endif
 
 BuildRequires:		systemd
 Requires(post):		systemd
@@ -233,17 +193,10 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %dir %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %dir %{_datadir}/%{name}/empty
-%if 0%{?with_python2}
-%dir %{python_sitelib}/ovirt_vmconsole
-%{python_sitelib}/ovirt_vmconsole/__init__.py*
-%{python_sitelib}/ovirt_vmconsole/common/
-%endif
-%if 0%{?with_python3}
 %dir %{python3_sitelib}/ovirt_vmconsole
 %{python3_sitelib}/ovirt_vmconsole/__init__.py*
 %{python3_sitelib}/ovirt_vmconsole/common/
 %exclude %{python3_sitelib}/ovirt_vmconsole/__pycache__/*
-%endif
 %{_datadir}/selinux/packages/ovirt-vmconsole/%{modulename}.pp
 %{_docdir}/%{name}/
 %{_sysconfdir}/pki/%{name}/
