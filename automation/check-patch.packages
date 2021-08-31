@@ -7,13 +7,10 @@ gettext-devel
 git
 openssh-clients
 openssh-server
-policycoreutils-python
 policycoreutils-python3
-python2-devel
-python2-nose
 python3-devel
 python3-nose
 selinux-policy-devel
 socat
 systemd
-yum-utils
+dnf-utils
