@@ -7,10 +7,15 @@
 
 SUFFIX=".$(date -u +%Y%m%d%H%M%S).git$(git rev-parse --short HEAD)"
 
+# mock runner is not setting up the system correctly
+# https://issues.redhat.com/browse/CPDEVOPS-242
+dnf install -y $(cat automation/check-patch.packages)
+
+autopoint
 autoreconf -ivf
 ./configure
 make dist
-yum-builddep ovirt-vmconsole.spec
+dnf builddep -y ovirt-vmconsole.spec
 rpmbuild \
     -D "_topdir $PWD/tmp.repos" \
     -D "release_suffix ${SUFFIX}" \

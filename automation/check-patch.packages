@@ -1,6 +1,7 @@
 autoconf
 automake
 checkpolicy
+dnf
 gcc
 gettext
 gettext-devel
