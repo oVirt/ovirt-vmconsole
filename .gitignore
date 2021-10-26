@@ -1,5 +1,5 @@
 ABOUT-NLS
-Makefile
+/Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache
@@ -54,3 +54,14 @@ src/ovirt-vmconsole-proxy/ssh_config
 src/ovirt-vmconsole-proxy/ssh_config.in
 src/ovirt_vmconsole/common/config.py
 src/ovirt_vmconsole/common/config.py.in
+selinux-ovirt_vmconsole/Makefile
+src/Makefile
+src/ovirt-vmconsole-host/Makefile
+src/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/Makefile
+src/ovirt-vmconsole-proxy/Makefile
+src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/Makefile
+src/ovirt_vmconsole/Makefile
+src/ovirt_vmconsole/common/Makefile
+src/ovirt_vmconsole/ovirt_vmconsole_host_shell/Makefile
+src/ovirt_vmconsole/ovirt_vmconsole_proxy_keys/Makefile
+src/ovirt_vmconsole/ovirt_vmconsole_proxy_shell/Makefile
