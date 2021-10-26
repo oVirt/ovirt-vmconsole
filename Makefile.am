@@ -32,7 +32,7 @@ dist_noinst_DATA = \
 	$(NULL)
 
 dist_doc_DATA = \
-	README \
+	README.md \
 	README.API \
 	$(NULL)
 
