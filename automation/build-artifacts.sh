@@ -1,6 +1,10 @@
 #!/bin/bash -xe
-[[ -d exported-artifacts ]] \
-|| mkdir -p exported-artifacts
+
+[[ -z "$EXPORT_DIR" ]] || \
+EXPORT_DIR="exported-artifacts"
+
+[[ -d "$EXPORT_DIR" ]] \
+|| mkdir -p "$EXPORT_DIR"
 
 [[ -d tmp.repos ]] \
 || mkdir -p tmp.repos
@@ -21,8 +25,8 @@ rpmbuild \
     -D "release_suffix ${SUFFIX}" \
     -ta ovirt-vmconsole*.tar.gz
 
-mv *.tar.gz exported-artifacts
+mv *.tar.gz "$EXPORT_DIR"
 find \
     "$PWD/tmp.repos" \
     -iname \*.rpm \
-    -exec mv {} exported-artifacts/ \;
+    -exec mv {} "$EXPORT_DIR"/ \;
