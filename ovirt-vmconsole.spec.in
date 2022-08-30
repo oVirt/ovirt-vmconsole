@@ -24,6 +24,17 @@ BuildRequires:	openssh-server
 BuildRequires:	selinux-policy-devel
 BuildRequires:  selinux-policy
 BuildArch:	noarch
+
+# For upstream require at least the version from the latest stable release. (>=)
+# TODO: remove those hard-coded values once we're able
+# to build RPMs in chroots based on latest stable releases.
+%if 0%{?rhel} == 9
+%global _selinux_policy_version 38.1.53-5.el9_6
+%endif
+%if 0%{?rhel} == 10
+%global _selinux_policy_version 40.13.26-1.el10
+%endif
+
 %{?selinux_requires}
 
 BuildRequires:	python3-devel
