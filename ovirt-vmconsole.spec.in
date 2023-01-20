@@ -202,6 +202,7 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %{_sysconfdir}/pki/%{name}/
 
 %files host
+%config(noreplace) %{_datadir}/ovirt-vmconsole/ovirt-vmconsole-host/ovirt-vmconsole-host-sshd/sshd_config
 %{_datadir}/%{name}/ovirt-vmconsole-host/
 %{_libexecdir}/ovirt-vmconsole-host-*
 %{_sysconfdir}/%{name}/ovirt-vmconsole-host/
