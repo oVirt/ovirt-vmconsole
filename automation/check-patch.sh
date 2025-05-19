@@ -2,11 +2,5 @@
 
 automation/build-artifacts.sh
 
-if [ -x /usr/bin/nosetests-3 ]
-then
-nosetests-3
-elif [ -x /usr/bin/nosetests ]
-then
-nosetests
-fi
-
+cd src/
+python3 -m unittest discover ../tests "*_test.py"
