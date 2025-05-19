@@ -10,6 +10,7 @@ git_cfg_safe: installdeps
 
 srpm: git_cfg_safe
 	$(eval SUFFIX=$(shell sh -c " echo '.$$(date -u +%Y%m%d%H%M%S).git$$(git rev-parse --short HEAD)'"))
+	sed "s:%{?release_suffix}:${SUFFIX}:" -i ovirt-vmconsole.spec.in
 	mkdir -p tmp.repos/SOURCES
 	autopoint
 	autoreconf -ivf
@@ -17,6 +18,5 @@ srpm: git_cfg_safe
 	make dist
 	rpmbuild \
 		-D "_topdir tmp.repos" \
-		-D "release_suffix ${SUFFIX}" \
 		-ts ./*.tar.gz
 	cp tmp.repos/SRPMS/*.src.rpm $(outdir)
