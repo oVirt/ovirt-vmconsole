@@ -42,13 +42,13 @@ class TestConsoleList(unittest.TestCase):
         data = dict(self.out)
         data['consoles'] = cons
         consoles = validate.console_list(data)
-        self.assertEquals(consoles['consoles'], expected)
+        self.assertEqual(consoles['consoles'], expected)
 
     def test_reorder_empty(self):
         data = dict(self.out)
         consoles = validate.console_list(data)
-        self.assertEquals(consoles, self.out)
-        self.assertEquals(consoles['consoles'], [])
+        self.assertEqual(consoles, self.out)
+        self.assertEqual(consoles['consoles'], [])
 
     def test_reorder_does_not_change_other_keys(self):
         cons = [
@@ -61,7 +61,7 @@ class TestConsoleList(unittest.TestCase):
         consoles = validate.console_list(data)
         del consoles['consoles']
         del self.out['consoles']
-        self.assertEquals(consoles, self.out)
+        self.assertEqual(consoles, self.out)
 
     def assertInvalid(self):
         self.assertRaises(RuntimeError,
