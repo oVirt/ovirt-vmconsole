@@ -1,0 +1,10 @@
+{
+  "name": "oVirt VMConsole Development",
+  "image": "quay.io/centos/centos:stream10",
+  "postCreateCommand": "dnf update -y && dnf install -y sudo",
+  "remoteUser": "root",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ]
+}
