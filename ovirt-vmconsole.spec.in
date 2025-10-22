@@ -228,6 +228,11 @@ install -m 644 "src/ovirt-vmconsole-proxy/ovirt-vmconsole-proxy-sshd/ovirt-vmcon
 %{_unitdir}/ovirt-vmconsole-proxy-sshd.service
 
 %changelog
+* Wed Oct 22 2025 Jean-Louis Dupond <jean-louis@dupond.be> - 1.0.10-1
+- Build for CentOS 10
+- Drop nose tests
+- Use EL9/EL10 selinux version as lowest supported version
+
 * Tue Nov 28 2023 Sandro Bonazzola <sandro.bonazzola@gmail.com> - 1.0.9-3
 - Rebuilt for spec change (PR#5)
 - Do not overwrite the ovirt-vmconsole-proxy sshd_config file during updates
