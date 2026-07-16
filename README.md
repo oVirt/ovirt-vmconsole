@@ -1,5 +1,4 @@
 # OVIRT-VMCONSOLE
-[![Copr build status](https://copr.fedorainfracloud.org/coprs/ovirt/ovirt-master-snapshot/package/ovirt-vmconsole/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ovirt/ovirt-master-snapshot/package/ovirt-vmconsole/)
 
 ## OUTLINE
 
